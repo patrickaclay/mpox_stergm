@@ -1,6 +1,7 @@
-This repository holds 7 R scripts to fit and run a stergm model to the 2022
-mpox outbreak, as well as two files describing the the model methods, and one 
-empty dataframe to use for model fitting. 
+This repository holds 9 R scripts to fit and run a stergm model to the 2022
+mpox outbreak, as well as two files describing the the model methods, and some
+datasheets (which will need to be put into appropriate folders, examine read and save
+functions in R scripts).
 
 00_mpox_stergm_modules.R: This code contains functions to run the network model.
 
@@ -22,6 +23,8 @@ set. Can alter whether vaccination happens, how much vaccination happens, etc.
 
 06_compile_posterior_runs.R: Will compile simulation output. Comments indicate
 al the possible output paramters that you can choose to compile. 
+
+07_figure_code_for_git.R: Will create and save figures for manuscript. 
 
 main_stergm_methods.docx and supp_stergm_methods.docx are the methods sections
 from a manuscript currently in review that will explain the model and methods. 
