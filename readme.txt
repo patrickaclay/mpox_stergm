@@ -21,10 +21,7 @@ Will need to alter parameters such as % of vaccines that are given to MSM.
 Additionally, 
 
 04_fitting_priors.R: selects 10% best fitting prior paramter sets. 
-Calls NC_data_through_jan25.csv, which is currently empty. 
-Will need to enter daily cases, and then compute comulative daily cases, 
-and a running 7 day mean. 
-Will want to visualize fit sets vs empirical cases to make sure you are getting a good fit. 
+Calls NYC_data_through_jan25.csv. 
 
 05_run_mpox_stergm_scenarios: Runs a year long simulation for each fit parameter
 set. Can alter whether vaccination happens, how much vaccination happens, etc.
