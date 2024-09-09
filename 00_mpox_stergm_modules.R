@@ -17,37 +17,33 @@
 #because they were throwing errors
 
 
-##################### Netsim Setup Functions #####################################
 
 # Parameters ####
 param_msm <- function(init.inf = 5,             # initial number of infected people 
-                      #following paramters fed in via control script
-                      behavior.change = behavior.change.switch, #do individuals adapt their behavior? (0 or 1)
-                      vaccination = vaccination.switch, #do individuals receive vaccines? (0 or 1)
-                      behavior.change.amount = behavior.change.amount.param, #what is the maximum relative reduction in one time partnership rates with behavioral adaptation?
-                      surge.time = surge.time.param, #how long does the 'surge period' last? (time during which we have importations and extra network infection)
-                      surge.trans = surge.trans.param, #what is the transmission rate of extra network infections?
-                      import = import.param, #what is the daily number of imported infections during the surge period?
-
+                      behavior.change = behavior.change.switch,
+                      vaccination = vaccination.switch,
+                      behavior.change.amount = behavior.change.amount.param,
+                      surge.time = surge.time.param,
+                      surge.trans = surge.trans.param,
+                      import = import.param,
+                      behavior.delay = behave.delay,
                       
-                      #following paramters hardcoded (though latent period is set in control script)
-                      act.rate.main = 1.54/7, #daily rate of sex with main partner
-                      act.rate.casual = 0.96/7, #daily rate of sex with casual partner
-                      act.rate.instant = 1, # daily rate of sex with one time partners (must be one if model is run with daily timesteps)
+                      vaccine.multiply = vaccine.multiplier,
+                      vaccination.proportion.msm = vaccination.proportion.param,
+                      strategy = vacc.strategy,
+
+                      act.rate.main = 1.54/7, 
+                      act.rate.casual = 0.96/7, 
+                      act.rate.instant = 1, 
                       e.to.a.rate = 1/(7.6 - latent.period),     # transition rate from latent (e) to asymptomatically infectious (a)
-                      a.to.i.rate = 1/latent.period,       # transition rate from a to symptomatic. 
-                      testing.rate = 1/5,    # will take 5 minimum for symptomatic person to seek testing (fluctuates in function)
+                      a.to.i.rate = 1/latent.period,       # transition rate from a to symptomatic. Currently have it set so that a does not transmit
+                      testing.rate = 1/5,    # will take 8 days on average (median) for symptomatic person to seek testing
                       
                       inf.prob = trans.prob,       # probability of infection upon sexual contact
                       testing.prob = tx.seek.prob, # prob of inf. person seeking testing at all
                       i.to.r.rate = 1/infectious.period,  # natural clearance rate
                       
-                      #Vaccine paramters 
-                      nodal.tx = TRUE, #leave as true- means that individuals do not waffle on intent to receieve a vaccine
-                      # following numbers are first dose vaccines given per week 
-                      # * multiplier given in control script (leave as one unless exploring counterfactuals)
-                      # * the proportion of all vaccines that were given to MSM (set in control script)
-                      # week 1 starts x days after initial seeding, with x (vaccine.delay) given in control script
+                      nodal.tx = TRUE, 
                       vaccinate.coverage.1.1 = 478*vaccine.multiplier*vaccination.proportion.param, 
                       vaccinate.coverage.1.2 = 1573*vaccine.multiplier*vaccination.proportion.param, 
                       vaccinate.coverage.1.3 = 2729*vaccine.multiplier*vaccination.proportion.param, 
@@ -86,11 +82,6 @@ param_msm <- function(init.inf = 5,             # initial number of infected peo
                       vaccinate.coverage.1.36 = 53*vaccine.multiplier*vaccination.proportion.param, 
                       vaccinate.coverage.1.37 = 66*vaccine.multiplier*vaccination.proportion.param, 
                       vaccinate.coverage.1.38 = 66*vaccine.multiplier*vaccination.proportion.param, 
-                      
-                      # following numbers are second dose vaccines given per week 
-                      # * multiplier given in control script (leave as one unless exploring counterfactuals)
-                      # * the proportion of all vaccines that were given to MSM (set in control script)
-                      # week 1 starts x days after initial seeding, with x (vaccine.delay) given in control script
                       vaccinate.coverage.2.1 = 6*vaccine.multiplier*vaccination.proportion.param, 
                       vaccinate.coverage.2.2 = 9*vaccine.multiplier*vaccination.proportion.param, 
                       vaccinate.coverage.2.3 = 24*vaccine.multiplier*vaccination.proportion.param, 
@@ -128,11 +119,8 @@ param_msm <- function(init.inf = 5,             # initial number of infected peo
                       vaccinate.coverage.2.35 = 78*vaccine.multiplier*vaccination.proportion.param, 
                       vaccinate.coverage.2.36 = 101*vaccine.multiplier*vaccination.proportion.param, 
                       vaccinate.coverage.2.37 = 86*vaccine.multiplier*vaccination.proportion.param, 
-                      vaccinate.coverage.2.38 = 70*vaccine.multiplier*vaccination.proportion.param, 
+                      vaccinate.coverage.2.38 = 70*vaccine.multiplier*vaccination.proportion.param,
                       
-                      #determines on what day of simulation vaccination begins
-                      #vaccine.delay is days between first imported infections (not cases!) and 
-                      #vaccine timing adjust can be used to change vaccine timeline for counterfactual analysis
                       vaccinate.timeline.1 = 0 + vaccine.timing.adjust + vaccine.delay,  
                       vaccinate.timeline.2 = 7 + vaccine.timing.adjust + vaccine.delay,  
                       vaccinate.timeline.3 = 14 + vaccine.timing.adjust + vaccine.delay,  
@@ -173,10 +161,8 @@ param_msm <- function(init.inf = 5,             # initial number of infected peo
                       vaccinate.timeline.38 = 259 + vaccine.timing.adjust + vaccine.delay,  
                       vaccinate.timeline.over = 266 + vaccine.timing.adjust + vaccine.delay,  
                       vaccinate.interval = vaccinate.time.til.effectiveness,  # time after vaccine that dose becomes effective
-                      vacc.effect.1 = vaccine.effectiveness.1,       # 1 dose effectiveness, set in control script
-                      vacc.effect.2 = vaccine.effectiveness.2,       # 2 dose effectiveness, set in control script
-                      
-                      #relative reduction in one time/casual partnership rates over time
+                      vacc.effect.1 = vaccine.effectiveness.1,       # two weeks after first dose
+                      vacc.effect.2 = vaccine.effectiveness.2,       # two weeks after second dose
                       rel.behave.change.1 = 0,
                       rel.behave.change.2 = 0.015,
                       rel.behave.change.3 = 0.113,
@@ -227,10 +213,10 @@ param_msm <- function(init.inf = 5,             # initial number of infected peo
 
 # Control Settings ####
 control_msm <- function(simno = 1,
-                        nsteps = 200, #overwritten in control script
-                        start = 1, 
-                        nsims = 1, #overwritten in control script
-                        ncores = 4, #overwritten in control script
+                        nsteps = 200,
+                        start = 1,
+                        nsims = 1,
+                        ncores = 4,
                         cumulative.edgelist = FALSE,
                         truncate.el.cuml = 0,
                         initialize.FUN = initialize_msm,
@@ -281,14 +267,16 @@ control_msm <- function(simno = 1,
 #### Initialize Module #####
 # gets called once at the beginning of each simulation to construct networks
 # and master dat object 
-initialize_msm <- function(x, param, init, control, s) { #this is what sets up the network that is then changed by simnet
+
+initialize_msm <- function(x, param, init, control, s) { #So this is what sets up the network that is then changed by simnet
   
-  dat <- create_dat_object(param, init, control) 
+  dat <- create_dat_object(param, init, control) #Ah, this is why everything depends on init
   
   #### Network Setup ####
   # Initial network setup
   # Simulate each network on the basis of their fits
   # Add to dat object 
+  
   dat[["nw"]] <- list()
   nnets <- 3
   for (i in 1:nnets) {
@@ -309,14 +297,15 @@ initialize_msm <- function(x, param, init, control, s) { #this is what sets up t
   # Convert to tergmLite method
   dat <- init_tergmLite(dat)
   
-  #### Nodal (agent) Attributes Setup ####
+  #### Nodal Attributes Setup ####
   dat[["attr"]] <- param[["netstats"]][["attr"]]
   
-  num <- network.size(nw[[1]]) #sets number of agents
+  num <- network.size(nw[[1]])
   dat <- append_core_attr(dat, 1, num)
   
   # Pull in attributes on network. 
-  # We pull from the one-time network because this has both deg.main and deg.pers (casual) attributes 
+  # We pull from the one-time network because this has both deg.main and deg.pers attributes 
+  # (see estimation script)
   nwattr.all <- names(nw[[3]][["val"]][[3]])
   nwattr.use <- nwattr.all[!nwattr.all %in% c("na", "vertex.names")]
   for (i in seq_along(nwattr.use)) {
@@ -324,25 +313,24 @@ initialize_msm <- function(x, param, init, control, s) { #this is what sets up t
   }
   
   # Add other attributes 
+  
   # First we need some initial conditions parameters
   init.inf <- get_param(dat, "init.inf")
   
   # Generate status vector based on nums init vaccinated and init infected (non-overlapping groups)
-  # starting values s / i / v (susceptible, infectious, vaccinated)
+  # starting values s / i / v
   # initial infections among highest-activity groups unless init size is > than size of those groups 
   
-  status <- rep("s", num) #make vector of status = susceptible
-  riskg <- get_attr(dat, "riskg") #get sexual activity levels from network 
+  status <- rep("s", num)
+  riskg <- get_attr(dat, "riskg")
   
-  # initial infecteds, place in activity groups 4-6
+  # initial infecteds, groups 4-6
   risk.high <- which(status == "s" & (riskg == "4" | riskg == "5" | riskg == "6"))
   
-  #sample from high activity individuals to seed with initial infections
   if (length(risk.high) > init.inf) {
     infected <- sample(risk.high, init.inf, replace=FALSE)
   }  else {infected <- sample(which(status=="s"), init.inf, replace=FALSE)}
   
-  #start initial infections in the asymptomatic pre-infectious stage
   status[infected] <- "a"
   
   # vaccinated time vector (NA until vaccinated)
@@ -365,7 +353,7 @@ initialize_msm <- function(x, param, init, control, s) { #this is what sets up t
   sqrt.age <- get_attr(dat, "sqrt.age")
   age <- sqrt.age^2
   
-  # Set nodal attribute for treatment seeking if nodal.tx=TRUE
+  # Set nodal attribute for tx seeking if nodal.tx=TRUE
   if (dat$param$nodal.tx){
     tx.prob <- get_param(dat, "testing.prob")
     tx.seek <- rep(0, num)
@@ -442,11 +430,10 @@ simnet_msm <- function(dat, at) {
   ## Nest the edges_correct function
   # (workaround for some functions not being accessible when running in parallel even if in global environ)
   
-  #edges correct changes the number of expected edges (sexual partners)
-  #over time, reflecting behavioral adaptation
   edges_correct_msm <- function(dat, at) {
     
       behavior.change         <- get_param(dat, "behavior.change")
+      behavior.delay          <- get_param(dat, "behavior.delay")
 
     if(behavior.change == TRUE){
     
@@ -497,10 +484,10 @@ simnet_msm <- function(dat, at) {
       
       behavior.change.amount <- get_param(dat, "behavior.change.amount")
 
-      if((at-1) < 2 | (at-1) > 230){week.yesterday = 33}
-      if((at-1) >= 2 & (at-1) <= 230){week.yesterday = floor(((at-1)-2)/7)+1}
-      if(at < 2 | at > 230){week.today = 33}
-      if(at >= 2 & at <= 230){week.today = floor((at-2)/7)+1}
+      if(((at-behavior.delay)-1) < 2 | ((at-behavior.delay)-1) > 230){week.yesterday = 33}
+      if(((at-behavior.delay)-1) >= 2 & ((at-behavior.delay)-1) <= 230){week.yesterday = floor((((at-behavior.delay)-1)-2)/7)+1}
+      if((at-behavior.delay) < 2 | (at-behavior.delay) > 230){week.today = 33}
+      if((at-behavior.delay) >= 2 & (at-behavior.delay) <= 230){week.today = floor(((at-behavior.delay)-2)/7)+1}
     old.num <- sum(dat$attr$active == 1, na.rm = TRUE) * (1 - behavior.change.amount * rel.behave.change[week.yesterday])                     #sets number of nodes at prior timestep
     new.num <- sum(dat$attr$active == 1, na.rm = TRUE) * (1 - behavior.change.amount * rel.behave.change[week.today]) #sets number of nodes at this timestep
     adjust <- log(new.num) - log(old.num)               #calculates log difference between those two
@@ -526,6 +513,7 @@ simnet_msm <- function(dat, at) {
   ##end nesting##
   #########################
   
+  
   ## Grab parameters from dat object 
   cumulative.edgelist <- get_control(dat, "cumulative.edgelist") # are we tracking the cumulative edgelist (T/F)
   truncate.el.cuml <- get_control(dat, "truncate.el.cuml")       # how long in the past do we keep edgelist
@@ -536,22 +524,26 @@ simnet_msm <- function(dat, at) {
   nwstats.formulas <- get_control(dat, "nwstats.formulas")
   
     ## Main network
-    for (i in 1:length(dat$el)) {    #this is where loops through overlapping networks
+    for (i in 1:length(dat$el)) {    #I believe this is where loops through overlapping networks
       nwparam <- EpiModel::get_nwparam(dat, network = i)   #get parameters of this network
-      isTERGM <- ifelse(nwparam$coef.diss$duration > 1, TRUE, FALSE) #set isTERGM to true if relationships non-instantaneous
+      isTERGM <- ifelse(nwparam$coef.diss$duration > 1, TRUE, FALSE) #set isTERGM to true is relationships non-instantaneous
       
       nwL <- networkLite(dat[["el"]][[i]], dat[["attr"]])
       
       
+#      if (get_control(dat, "tergmLite.track.duration") == TRUE) { #figure out how long relationships have lasted
+#        nwL %n% "time" <- dat[["nw"]][[i]] %n% "time"
+#        nwL %n% "lasttoggle" <- dat[["nw"]][[i]] %n% "lasttoggle"
+#      }
       
-      if(i==1){ #i = 1 for main relationship network
+      if(i==1){
         # update pers degree (nodal attribute based on network status)
         deg.pers <- get_attr(dat, "deg.pers")
         deg.pers <- get_degree(dat[["el"]][[2]])
         dat <- set_attr(dat, "deg.pers", deg.pers)
       }
       
-      if(i==2){ #i = 2 for casual relationship network
+      if(i==2){
         # update main degree (nodal attribute based on network status)
         deg.main <- get_attr(dat, "deg.main")
         deg.main <- get_degree(dat[["el"]][[1]])
@@ -603,6 +595,11 @@ simnet_msm <- function(dat, at) {
     
   }
   
+#  if (get_control(dat, "cumulative.edgelist") == TRUE) {
+#    for (n_network in seq_len(3)) {
+#      dat <- update_cumulative_edgelist(dat, n_network, truncate.el.cuml)
+#    }
+#  }
   
   return(dat)
 }
@@ -617,13 +614,13 @@ simnet_msm <- function(dat, at) {
 ##Infection
 infect_msm <- function(dat, at) {
   
-  # model-specific discordant edgelist function to use later in infect_msm
+
+  # model-specific discordant edgelist function
   discord_edgelist_mpx <- function (dat, at, network){ 
-    status <- get_attr(dat, "status") #suscepeible, asymptomatic, etc....
-    active <- get_attr(dat, "active") #is person still in model (should always be yes)
-    el <- get_edgelist(dat, network) #who is having sex with who?
+    status <- get_attr(dat, "status")
+    active <- get_attr(dat, "active")
+    el <- get_edgelist(dat, network)
     del <- NULL
-    #here we identify infected individuals having sex with susceptible/vaccinated individuals
     if (nrow(el) > 0) {
       el <- el[sample(1:nrow(el)), , drop = FALSE]
       stat <- matrix(status[el], ncol = 2)
@@ -648,6 +645,7 @@ infect_msm <- function(dat, at) {
   }
   
   
+  #### Setup ####
   
   # Get attributes and parameters 
   active    <- get_attr(dat, "active")
@@ -670,10 +668,10 @@ infect_msm <- function(dat, at) {
   vaccinate.interval <- get_param(dat, "vaccinate.interval")
   
   # Set up trackers 
-  nInf <- 0 #number infected this timestep
-  idsInf <- NULL #ids of newly infected individuals
+  nInf <- 0
+  idsInf <- NULL
   
-  # number infected this timestep by risk group 
+  # By risk group 
   nInf.q1 <- 0
   nInf.q2 <- 0
   nInf.q3 <- 0
@@ -681,20 +679,20 @@ infect_msm <- function(dat, at) {
   nInf.q5 <- 0
   nInf.q6 <- 0
   
-  # New infections in each network this timestep
+  # New infections in each network
   nInfsMain <- 0
   nInfsPers <- 0
   nInfsInst   <- 0
   
   #### Transmissions ####
-  # Loop through discordant edgelists in each relationship type network
+  # Loop through discordant edgelists in each network
   for(nw.transmit in 1:3){ 
     
-    #what is the sexual contact rate for this relationship type
     if(nw.transmit == 1){act.rate <- act.rate.main}
-    #for casual relationships (network 2), rate changes with behavioral adaptation
     if(nw.transmit == 2){
       behavior.change         <- get_param(dat, "behavior.change")
+      behavior.delay         <- get_param(dat, "behavior.delay")
+      
       if(behavior.change == FALSE){act.rate <- act.rate.casual}
       
       if(behavior.change == TRUE){
@@ -745,13 +743,11 @@ infect_msm <- function(dat, at) {
         
         behavior.change.amount <- get_param(dat, "behavior.change.amount")
         
-        if(at < 2 | at > 230){week.today = 33}
-        if(at >= 2 & at <= 230){week.today = floor((at-2)/7)+1}
+        if((at-behavior.delay) < 2 | (at-behavior.delay) > 230){week.today = 33}
+        if((at-behavior.delay) >= 2 & (at-behavior.delay) <= 230){week.today = floor(((at-behavior.delay)-2)/7)+1}
         
         act.rate <- act.rate.casual * (1-(behavior.change.amount * rel.behave.change[week.today]))
       }}
-    #for one time sex (network three) behavioral adaptation impacts
-    #whether partnership forms, but rate is always 1/day
     if(nw.transmit == 3){act.rate <- act.rate.instant}
     
     # get discordant edgelist
@@ -759,7 +755,7 @@ infect_msm <- function(dat, at) {
     
     if (!(is.null(del))) {
       
-      # add status column for susceptibles
+      # add status column for sus 
       del$statusSus <- status[del$sus]
       # add column for vaccTime
       del$vaccTime1Sus <- vaccTime1[del$sus]
@@ -782,12 +778,12 @@ infect_msm <- function(dat, at) {
       del$actRate <- act.rate
       
       if(nw.transmit == 1){
-        del$actRate[del$statusInf == "i" | del$statusInf == "im"] <- act.rate/2 #halving sexual activity if have symptoms
-        del$actRate[del$statusInf == "i" & is.na(del$testTime)] <- 0.0035/inf.prob} #minimum transmission reflects household transmission if know status
+        del$actRate[del$statusInf == "i" | del$statusInf == "im"] <- act.rate/2
+        del$actRate[del$statusInf == "i" & !is.na(del$testTime)] <- 0.0035/inf.prob}
       
       if(nw.transmit == 2){
         del$actRate[del$statusInf == "i" | del$statusInf == "im"] <- act.rate/2
-        del$actRate[del$statusInf == "i" & is.na(del$testTime)] <- 0} #no sexual activity if infected and know status
+        del$actRate[del$statusInf == "i" & !is.na(del$testTime)] <- 0}
       
       
       # final transmission probability 
@@ -900,34 +896,23 @@ infect_msm <- function(dat, at) {
   dat <- set_epi(dat, "se.flow.ot", at, nInfsInst)
   
   ####superspreader event
-  #### here we infect people with a simple frequency dependent model 
-  #### to represent infection at sex-oriented MSM gatherings
-  #### not represented by the network.
-  #### also takes into account individuals traveling into 
-  #### population after becoming infected elsewhere
   dat <- set_epi(dat, "superspreader.event", at, 0)
 
   if(at > 5){
-    
-    #read in paramters
+  
     surge.time <- get_param(dat, "surge.time")
     surge.trans <- get_param(dat, "surge.trans")
     import <- get_param(dat, "import")
-    #assume super spreader events are contained to high activity population
-    #read in number of individuals in each infection category who 
-    #are high activity
     inf_hr <- get_epi(dat,"inf_hr", at-1)
     sus_hr <- get_epi(dat,"sus_hr", at-1)
     N_hr <- get_epi(dat,"N_hr", at-1)
     
     
-  if(at < surge.time){ 
-    #calculate number of new infectious due to superspreader events + importations
+  if(at < surge.time){ #median 17 days from 5 "a" individuals to 5 cases, another 5 between five cases and pride.
     super.spreader <- sus_hr * (inf_hr/N_hr) * surge.trans + floor(import) + rbinom(1,1,(import-floor(import)))
     status <- get_attr(dat, "status")
     riskg <- get_attr(dat, "riskg")
-    
-  # assign those infections to high activity agents
+  # initial infecteds
   risk.high <- which(status == "s" & (riskg == "4" | riskg == "5" | riskg == "6"))
   
   if (length(risk.high) < super.spreader) {super.spreader <- length(risk.high)}
@@ -1234,7 +1219,6 @@ prevalence_msm <- function(dat, at) {
 # Vaccinatation ####
 vaccinate_msm <- function(dat, at) {
   
-  #get vacc status atributes of all agents
   active <- get_attr(dat, "active")
   status <- get_attr(dat, "status")
   vaccTime1 <- get_attr(dat, "vaccTime1")
@@ -1242,10 +1226,253 @@ vaccinate_msm <- function(dat, at) {
   riskg <- get_attr(dat, "riskg")
   tx.seek <- get_attr(dat, "tx.seek")
   
-  #indicates whether we vaccinate
+  
   vaccination     <- get_param(dat, "vaccination")
+  vaccine.multiply    <- get_param(dat, "vaccine.multiply")
+  vaccination.proportion.msm    <- get_param(dat, "vaccination.proportion.msm")
+  strategy <- get_param(dat, "strategy")
+  
+  if(strategy == 1 & vaccination == TRUE){
+  vaccinate.coverage.1.1 = 478*vaccine.multiply*vaccination.proportion.msm 
+  vaccinate.coverage.1.2 = 1573*vaccine.multiply*vaccination.proportion.msm 
+  vaccinate.coverage.1.3 = 2729*vaccine.multiply*vaccination.proportion.msm 
+  vaccinate.coverage.1.4 = 7298*vaccine.multiply*vaccination.proportion.msm 
+  vaccinate.coverage.1.5 = 11342*vaccine.multiply*vaccination.proportion.msm
+  vaccinate.coverage.1.6 = 15542*vaccine.multiply*vaccination.proportion.msm 
+  vaccinate.coverage.1.7 = 20139*vaccine.multiply*vaccination.proportion.msm 
+  vaccinate.coverage.1.8 = 12273*vaccine.multiply*vaccination.proportion.msm 
+  vaccinate.coverage.1.9 = 6398*vaccine.multiply*vaccination.proportion.msm 
+  vaccinate.coverage.1.10 = 6118*vaccine.multiply*vaccination.proportion.msm 
+  vaccinate.coverage.1.11 = 3056*vaccine.multiply*vaccination.proportion.msm 
+  vaccinate.coverage.1.12 = 2490*vaccine.multiply*vaccination.proportion.msm 
+  vaccinate.coverage.1.13 = 1946*vaccine.multiply*vaccination.proportion.msm 
+  vaccinate.coverage.1.14 = 1748*vaccine.multiply*vaccination.proportion.msm 
+  vaccinate.coverage.1.15 = 1255*vaccine.multiply*vaccination.proportion.msm 
+  vaccinate.coverage.1.16 = 1090*vaccine.multiply*vaccination.proportion.msm 
+  vaccinate.coverage.1.17 = 845*vaccine.multiply*vaccination.proportion.msm 
+  vaccinate.coverage.1.18 = 706*vaccine.multiply*vaccination.proportion.msm 
+  vaccinate.coverage.1.19 = 444*vaccine.multiply*vaccination.proportion.msm 
+  vaccinate.coverage.1.20 = 393*vaccine.multiply*vaccination.proportion.msm 
+  vaccinate.coverage.1.21 = 359*vaccine.multiply*vaccination.proportion.msm 
+  vaccinate.coverage.1.22 = 159*vaccine.multiply*vaccination.proportion.msm 
+  vaccinate.coverage.1.23 = 222*vaccine.multiply*vaccination.proportion.msm 
+  vaccinate.coverage.1.24 = 148*vaccine.multiply*vaccination.proportion.msm 
+  vaccinate.coverage.1.25 = 150*vaccine.multiply*vaccination.proportion.msm 
+  vaccinate.coverage.1.26 = 158*vaccine.multiply*vaccination.proportion.msm 
+  vaccinate.coverage.1.27 = 115*vaccine.multiply*vaccination.proportion.msm 
+  vaccinate.coverage.1.28 = 118*vaccine.multiply*vaccination.proportion.msm 
+  vaccinate.coverage.1.29 = 111*vaccine.multiply*vaccination.proportion.msm 
+  vaccinate.coverage.1.30 = 98*vaccine.multiply*vaccination.proportion.msm 
+  vaccinate.coverage.1.31 = 95*vaccine.multiply*vaccination.proportion.msm 
+  vaccinate.coverage.1.32 = 101*vaccine.multiply*vaccination.proportion.msm 
+  vaccinate.coverage.1.33 = 87*vaccine.multiply*vaccination.proportion.msm 
+  vaccinate.coverage.1.34 = 74*vaccine.multiply*vaccination.proportion.msm 
+  vaccinate.coverage.1.35 = 48*vaccine.multiply*vaccination.proportion.msm 
+  vaccinate.coverage.1.36 = 53*vaccine.multiply*vaccination.proportion.msm 
+  vaccinate.coverage.1.37 = 66*vaccine.multiply*vaccination.proportion.msm 
+  vaccinate.coverage.1.38 = 66*vaccine.multiply*vaccination.proportion.msm 
+  vaccinate.coverage.2.1 = 6*vaccine.multiply*vaccination.proportion.msm 
+  vaccinate.coverage.2.2 = 9*vaccine.multiply*vaccination.proportion.msm 
+  vaccinate.coverage.2.3 = 24*vaccine.multiply*vaccination.proportion.msm 
+  vaccinate.coverage.2.4 = 43*vaccine.multiply*vaccination.proportion.msm 
+  vaccinate.coverage.2.5 = 65*vaccine.multiply*vaccination.proportion.msm #sum of first five weeks to account for 28 day gap
+  vaccinate.coverage.2.6 = 96*vaccine.multiply*vaccination.proportion.msm 
+  vaccinate.coverage.2.7 = 216*vaccine.multiply*vaccination.proportion.msm 
+  vaccinate.coverage.2.8 = 287*vaccine.multiply*vaccination.proportion.msm 
+  vaccinate.coverage.2.9 = 213*vaccine.multiply*vaccination.proportion.msm 
+  vaccinate.coverage.2.10 = 263*vaccine.multiply*vaccination.proportion.msm 
+  vaccinate.coverage.2.11 = 2340*vaccine.multiply*vaccination.proportion.msm 
+  vaccinate.coverage.2.12 = 7193*vaccine.multiply*vaccination.proportion.msm 
+  vaccinate.coverage.2.13 = 14588*vaccine.multiply*vaccination.proportion.msm 
+  vaccinate.coverage.2.14 = 9510*vaccine.multiply*vaccination.proportion.msm 
+  vaccinate.coverage.2.15 = 5390*vaccine.multiply*vaccination.proportion.msm 
+  vaccinate.coverage.2.16 = 2264*vaccine.multiply*vaccination.proportion.msm 
+  vaccinate.coverage.2.17 = 1717*vaccine.multiply*vaccination.proportion.msm 
+  vaccinate.coverage.2.18 = 1284*vaccine.multiply*vaccination.proportion.msm 
+  vaccinate.coverage.2.19 = 853*vaccine.multiply*vaccination.proportion.msm 
+  vaccinate.coverage.2.20 = 1040*vaccine.multiply*vaccination.proportion.msm 
+  vaccinate.coverage.2.21 = 705*vaccine.multiply*vaccination.proportion.msm 
+  vaccinate.coverage.2.22 = 227*vaccine.multiply*vaccination.proportion.msm 
+  vaccinate.coverage.2.23 = 342*vaccine.multiply*vaccination.proportion.msm 
+  vaccinate.coverage.2.24 = 269*vaccine.multiply*vaccination.proportion.msm 
+  vaccinate.coverage.2.25 = 276*vaccine.multiply*vaccination.proportion.msm 
+  vaccinate.coverage.2.26 = 214*vaccine.multiply*vaccination.proportion.msm 
+  vaccinate.coverage.2.27 = 134*vaccine.multiply*vaccination.proportion.msm 
+  vaccinate.coverage.2.28 = 187*vaccine.multiply*vaccination.proportion.msm 
+  vaccinate.coverage.2.29 = 182*vaccine.multiply*vaccination.proportion.msm 
+  vaccinate.coverage.2.30 = 146*vaccine.multiply*vaccination.proportion.msm 
+  vaccinate.coverage.2.31 = 89*vaccine.multiply*vaccination.proportion.msm 
+  vaccinate.coverage.2.32 = 117*vaccine.multiply*vaccination.proportion.msm 
+  vaccinate.coverage.2.33 = 100*vaccine.multiply*vaccination.proportion.msm 
+  vaccinate.coverage.2.34 = 88*vaccine.multiply*vaccination.proportion.msm 
+  vaccinate.coverage.2.35 = 78*vaccine.multiply*vaccination.proportion.msm 
+  vaccinate.coverage.2.36 = 101*vaccine.multiply*vaccination.proportion.msm 
+  vaccinate.coverage.2.37 = 86*vaccine.multiply*vaccination.proportion.msm 
+  vaccinate.coverage.2.38 = 70*vaccine.multiply*vaccination.proportion.msm
+  }
+  
+  if(strategy == 2 & vaccination == TRUE){
+    vaccinate.coverage.1.1 = 484*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.1.2 = 1582*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.1.3 = 2753*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.1.4 = 7341*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.1.5 = 10923*vaccine.multiply*vaccination.proportion.msm
+    vaccinate.coverage.1.6 = 14056*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.1.7 = 17602*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.1.8 = 5219*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.1.9 = 0*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.1.10 = 0*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.1.11 = 0*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.1.12 = 0*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.1.13 = 0*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.1.14 = 8063*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.1.15 = 6645*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.1.16 = 3354*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.1.17 = 2562*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.1.18 = 0*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.1.19 = 0*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.1.20 = 0*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.1.21 = 0*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.1.22 = 0*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.1.23 = 0*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.1.24 = 0*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.1.25 = 0*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.1.26 = 0*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.1.27 = 0*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.1.28 = 0*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.1.29 = 0*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.1.30 = 0*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.1.31 = 0*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.1.32 = 0*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.1.33 = 0*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.1.34 = 0*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.1.35 = 0*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.1.36 = 0*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.1.37 = 0*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.1.38 = 0*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.2.1 = 0*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.2.2 = 0*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.2.3 = 0*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.2.4 = 0*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.2.5 = 484*vaccine.multiply*vaccination.proportion.msm #sum of first five weeks to account for 28 day gap
+    vaccinate.coverage.2.6 = 1582*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.2.7 = 2753*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.2.8 = 7341*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.2.9 = 6611*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.2.10 = 6381*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.2.11 = 5396*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.2.12 = 9683*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.2.13 = 16534*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.2.14 = 3195*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.2.15 = 0*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.2.16 = 0*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.2.17 = 0*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.2.18 = 1990*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.2.19 = 1308*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.2.20 = 1433*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.2.21 = 1064*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.2.22 = 386*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.2.23 = 564*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.2.24 = 417*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.2.25 = 426*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.2.26 = 372*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.2.27 = 249*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.2.28 = 305*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.2.29 = 293*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.2.30 = 244*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.2.31 = 184*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.2.32 = 218*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.2.33 = 187*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.2.34 = 162*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.2.35 = 126*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.2.36 = 154*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.2.37 = 152*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.2.38 = 136*vaccine.multiply*vaccination.proportion.msm 
+    
+  }
+  
+  if(strategy == 3 & vaccination == TRUE){
+    vaccinate.coverage.1.1 = 242*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.1.2 = 791*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.1.3 = 1377*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.1.4 = 3671*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.1.5 = 5704*vaccine.multiply*vaccination.proportion.msm
+    vaccinate.coverage.1.6 = 7819*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.1.7 = 10178*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.1.8 = 6280*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.1.9 = 3306*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.1.10 = 3191*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.1.11 = 2698*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.1.12 = 4842*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.1.13 = 8267*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.1.14 = 5629*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.1.15 = 3323*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.1.16 = 1677*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.1.17 = 1281*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.1.18 = 995*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.1.19 = 654*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.1.20 = 717*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.1.21 = 532*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.1.22 = 193*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.1.23 = 282*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.1.24 = 209*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.1.25 = 213*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.1.26 = 186*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.1.27 = 125*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.1.28 = 153*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.1.29 = 147*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.1.30 = 122*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.1.31 = 92*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.1.32 = 109*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.1.33 = 94*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.1.34 = 81*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.1.35 = 63*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.1.36 = 77*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.1.37 = 76*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.1.38 = 68*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.2.1 = 0*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.2.2 = 0*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.2.3 = 0*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.2.4 = 0*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.2.5 = 0*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.2.6 = 242*vaccine.multiply*vaccination.proportion.msm #sum of first five weeks, to account for 28 day gap
+    vaccinate.coverage.2.7 = 791*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.2.8 = 1377*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.2.9 = 3671*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.2.10 = 5704*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.2.11 = 7819*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.2.12 = 10178*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.2.13 = 6280*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.2.14 = 3306*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.2.15 = 3191*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.2.16 = 2698*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.2.17 = 4842*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.2.18 = 8267*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.2.19 = 5629*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.2.20 = 3323*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.2.21 = 1677*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.2.22 = 1281*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.2.23 = 995*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.2.24 = 654*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.2.25 = 717*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.2.26 = 532*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.2.27 = 193*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.2.28 = 282*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.2.29 = 209*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.2.30 = 213*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.2.31 = 186*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.2.32 = 125*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.2.33 = 153*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.2.34 = 147*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.2.35 = 122*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.2.36 = 92*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.2.37 = 109*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.2.38 = 94*vaccine.multiply*vaccination.proportion.msm 
 
-  #gets days at which to implement various vaccination rates
+  }
+    
+  
+
   vaccinate.timeline.1    <- get_param(dat, "vaccinate.timeline.1")
   vaccinate.timeline.2    <- get_param(dat, "vaccinate.timeline.2")
   vaccinate.timeline.3    <- get_param(dat, "vaccinate.timeline.3")
@@ -1288,7 +1515,7 @@ vaccinate_msm <- function(dat, at) {
   
   duration <- vaccinate.timeline.2 - vaccinate.timeline.1  #time of each coverage period
   
-  #set coverage
+  
   if(at < vaccinate.timeline.1 | (at >= vaccinate.timeline.over) | vaccination == FALSE){
     coverage.1 <- 0
     coverage.2 <- 0
@@ -1296,198 +1523,198 @@ vaccinate_msm <- function(dat, at) {
   }
   
   if(vaccination == TRUE & at >= vaccinate.timeline.1 & at < vaccinate.timeline.2){
-    coverage.1 <- get_param(dat, "vaccinate.coverage.1.1")
-    coverage.2 <- get_param(dat, "vaccinate.coverage.2.1")
+    coverage.1 <- vaccinate.coverage.1.1
+    coverage.2 <- vaccinate.coverage.2.1
   }
   
   if(vaccination == TRUE & at >= vaccinate.timeline.2 & at < vaccinate.timeline.3){
-    coverage.1 <- get_param(dat, "vaccinate.coverage.1.2")
-    coverage.2 <- get_param(dat, "vaccinate.coverage.2.2")
+    coverage.1 <- vaccinate.coverage.1.2
+    coverage.2 <- vaccinate.coverage.2.2
   }
   
   if(vaccination == TRUE & at >= vaccinate.timeline.3 & at < vaccinate.timeline.4){
-    coverage.1 <- get_param(dat, "vaccinate.coverage.1.3")
-    coverage.2 <- get_param(dat, "vaccinate.coverage.2.3")
+    coverage.1 <- vaccinate.coverage.1.3
+    coverage.2 <- vaccinate.coverage.2.3
   }
   
   if(vaccination == TRUE & at >= vaccinate.timeline.4 & at < vaccinate.timeline.5){
-    coverage.1 <- get_param(dat, "vaccinate.coverage.1.4")
-    coverage.2 <- get_param(dat, "vaccinate.coverage.2.4")
+    coverage.1 <- vaccinate.coverage.1.4
+    coverage.2 <- vaccinate.coverage.2.4
   }
   
   if(vaccination == TRUE & at >= vaccinate.timeline.5 & at < vaccinate.timeline.6){
-    coverage.1 <- get_param(dat, "vaccinate.coverage.1.5")
-    coverage.2 <- get_param(dat, "vaccinate.coverage.2.5")
+    coverage.1 <- vaccinate.coverage.1.5
+    coverage.2 <- vaccinate.coverage.2.5
   }
   
   if(vaccination == TRUE & at >= vaccinate.timeline.6 & at < vaccinate.timeline.7){
-    coverage.1 <- get_param(dat, "vaccinate.coverage.1.6")
-    coverage.2 <- get_param(dat, "vaccinate.coverage.2.6")
+    coverage.1 <- vaccinate.coverage.1.6
+    coverage.2 <- vaccinate.coverage.2.6
   }
   
   if(vaccination == TRUE & at >= vaccinate.timeline.7 & at < vaccinate.timeline.8){
-    coverage.1 <- get_param(dat, "vaccinate.coverage.1.7")
-    coverage.2 <- get_param(dat, "vaccinate.coverage.2.7")
+    coverage.1 <- vaccinate.coverage.1.7
+    coverage.2 <- vaccinate.coverage.2.7
   }
   
   if(vaccination == TRUE & at >= vaccinate.timeline.8 & at < vaccinate.timeline.9){
-    coverage.1 <- get_param(dat, "vaccinate.coverage.1.8")
-    coverage.2 <- get_param(dat, "vaccinate.coverage.2.8")
+    coverage.1 <- vaccinate.coverage.1.8
+    coverage.2 <- vaccinate.coverage.2.8
   }
   
   if(vaccination == TRUE & at >= vaccinate.timeline.9 & at < vaccinate.timeline.10){
-    coverage.1 <- get_param(dat, "vaccinate.coverage.1.9")
-    coverage.2 <- get_param(dat, "vaccinate.coverage.2.9")
+    coverage.1 <- vaccinate.coverage.1.9
+    coverage.2 <- vaccinate.coverage.2.9
   }
   
   if(vaccination == TRUE & at >= vaccinate.timeline.10 & at < vaccinate.timeline.11){
-    coverage.1 <- get_param(dat, "vaccinate.coverage.1.10")
-    coverage.2 <- get_param(dat, "vaccinate.coverage.2.10")
+    coverage.1 <- vaccinate.coverage.1.10
+    coverage.2 <- vaccinate.coverage.2.10
   }
   
   if(vaccination == TRUE & at >= vaccinate.timeline.11 & at < vaccinate.timeline.12){
-    coverage.1 <- get_param(dat, "vaccinate.coverage.1.11")
-    coverage.2 <- get_param(dat, "vaccinate.coverage.2.11")
+    coverage.1 <- vaccinate.coverage.1.11
+    coverage.2 <- vaccinate.coverage.2.11
   }
   
   if(vaccination == TRUE & at >= vaccinate.timeline.12 & at < vaccinate.timeline.13){
-    coverage.1 <- get_param(dat, "vaccinate.coverage.1.12")
-    coverage.2 <- get_param(dat, "vaccinate.coverage.2.12")
+    coverage.1 <- vaccinate.coverage.1.12
+    coverage.2 <- vaccinate.coverage.2.12
   }
   
   if(vaccination == TRUE & at >= vaccinate.timeline.13 & at < vaccinate.timeline.14){
-    coverage.1 <- get_param(dat, "vaccinate.coverage.1.13")
-    coverage.2 <- get_param(dat, "vaccinate.coverage.2.13")
+    coverage.1 <- vaccinate.coverage.1.13
+    coverage.2 <- vaccinate.coverage.2.13
   }
   
   if(vaccination == TRUE & at >= vaccinate.timeline.14 & at < vaccinate.timeline.15){
-    coverage.1 <- get_param(dat, "vaccinate.coverage.1.14")
-    coverage.2 <- get_param(dat, "vaccinate.coverage.2.14")
+    coverage.1 <- vaccinate.coverage.1.14
+    coverage.2 <- vaccinate.coverage.2.14
   }
   
   if(vaccination == TRUE & at >= vaccinate.timeline.15 & at < vaccinate.timeline.16){
-    coverage.1 <- get_param(dat, "vaccinate.coverage.1.15")
-    coverage.2 <- get_param(dat, "vaccinate.coverage.2.15")
+    coverage.1 <- vaccinate.coverage.1.15
+    coverage.2 <- vaccinate.coverage.2.15
   }
   
   if(vaccination == TRUE & at >= vaccinate.timeline.16 & at < vaccinate.timeline.17){
-    coverage.1 <- get_param(dat, "vaccinate.coverage.1.16")
-    coverage.2 <- get_param(dat, "vaccinate.coverage.2.16")
+    coverage.1 <- vaccinate.coverage.1.16
+    coverage.2 <- vaccinate.coverage.2.16
   }
   
   if(vaccination == TRUE & at >= vaccinate.timeline.17 & at < vaccinate.timeline.18){
-    coverage.1 <- get_param(dat, "vaccinate.coverage.1.17")
-    coverage.2 <- get_param(dat, "vaccinate.coverage.2.17")
+    coverage.1 <- vaccinate.coverage.1.17
+    coverage.2 <- vaccinate.coverage.2.17
   }
   
   if(vaccination == TRUE & at >= vaccinate.timeline.18 & at < vaccinate.timeline.19){
-    coverage.1 <- get_param(dat, "vaccinate.coverage.1.18")
-    coverage.2 <- get_param(dat, "vaccinate.coverage.2.18")
+    coverage.1 <- vaccinate.coverage.1.18
+    coverage.2 <- vaccinate.coverage.2.18
   }
   
   if(vaccination == TRUE & at >= vaccinate.timeline.19 & at < vaccinate.timeline.20){
-    coverage.1 <- get_param(dat, "vaccinate.coverage.1.19")
-    coverage.2 <- get_param(dat, "vaccinate.coverage.2.19")
+    coverage.1 <- vaccinate.coverage.1.19
+    coverage.2 <- vaccinate.coverage.2.19
   }
   
   if(vaccination == TRUE & at >= vaccinate.timeline.20 & at < vaccinate.timeline.21){
-    coverage.1 <- get_param(dat, "vaccinate.coverage.1.20")
-    coverage.2 <- get_param(dat, "vaccinate.coverage.2.20")
+    coverage.1 <- vaccinate.coverage.1.20
+    coverage.2 <- vaccinate.coverage.2.20
   }
   
   if(vaccination == TRUE & at >= vaccinate.timeline.21 & at < vaccinate.timeline.22){
-    coverage.1 <- get_param(dat, "vaccinate.coverage.1.21")
-    coverage.2 <- get_param(dat, "vaccinate.coverage.2.21")
+    coverage.1 <- vaccinate.coverage.1.21
+    coverage.2 <- vaccinate.coverage.2.21
   }
   
   if(vaccination == TRUE & at >= vaccinate.timeline.22 & at < vaccinate.timeline.23){
-    coverage.1 <- get_param(dat, "vaccinate.coverage.1.22")
-    coverage.2 <- get_param(dat, "vaccinate.coverage.2.22")
+    coverage.1 <- vaccinate.coverage.1.22
+    coverage.2 <- vaccinate.coverage.2.22
   }
   
   if(vaccination == TRUE & at >= vaccinate.timeline.23 & at < vaccinate.timeline.23){
-    coverage.1 <- get_param(dat, "vaccinate.coverage.1.23")
-    coverage.2 <- get_param(dat, "vaccinate.coverage.2.23")
+    coverage.1 <- vaccinate.coverage.1.23
+    coverage.2 <- vaccinate.coverage.2.23
   }
   
   if(vaccination == TRUE & at >= vaccinate.timeline.23 & at < vaccinate.timeline.24){
-    coverage.1 <- get_param(dat, "vaccinate.coverage.1.23")
-    coverage.2 <- get_param(dat, "vaccinate.coverage.2.23")
+    coverage.1 <- vaccinate.coverage.1.23
+    coverage.2 <- vaccinate.coverage.2.23
   }
   
   if(vaccination == TRUE & at >= vaccinate.timeline.24 & at < vaccinate.timeline.over){
-    coverage.1 <- get_param(dat, "vaccinate.coverage.1.24")
-    coverage.2 <- get_param(dat, "vaccinate.coverage.2.24")
+    coverage.1 <- vaccinate.coverage.1.24
+    coverage.2 <- vaccinate.coverage.2.24
   }
   
   if(vaccination == TRUE & at >= vaccinate.timeline.25 & at < vaccinate.timeline.26){
-    coverage.1 <- get_param(dat, "vaccinate.coverage.1.25")
-    coverage.2 <- get_param(dat, "vaccinate.coverage.2.25")
+    coverage.1 <- vaccinate.coverage.1.25
+    coverage.2 <- vaccinate.coverage.2.25
   }
   
   if(vaccination == TRUE & at >= vaccinate.timeline.26 & at < vaccinate.timeline.27){
-    coverage.1 <- get_param(dat, "vaccinate.coverage.1.26")
-    coverage.2 <- get_param(dat, "vaccinate.coverage.2.26")
+    coverage.1 <- vaccinate.coverage.1.26
+    coverage.2 <- vaccinate.coverage.2.26
   }
   
   if(vaccination == TRUE & at >= vaccinate.timeline.27 & at < vaccinate.timeline.28){
-    coverage.1 <- get_param(dat, "vaccinate.coverage.1.27")
-    coverage.2 <- get_param(dat, "vaccinate.coverage.2.27")
+    coverage.1 <- vaccinate.coverage.1.27
+    coverage.2 <- vaccinate.coverage.2.27
   }
   
   if(vaccination == TRUE & at >= vaccinate.timeline.28 & at < vaccinate.timeline.29){
-    coverage.1 <- get_param(dat, "vaccinate.coverage.1.28")
-    coverage.2 <- get_param(dat, "vaccinate.coverage.2.28")
+    coverage.1 <- vaccinate.coverage.1.28
+    coverage.2 <- vaccinate.coverage.2.28
   }
   
   if(vaccination == TRUE & at >= vaccinate.timeline.29 & at < vaccinate.timeline.30){
-    coverage.1 <- get_param(dat, "vaccinate.coverage.1.29")
-    coverage.2 <- get_param(dat, "vaccinate.coverage.2.29")
+    coverage.1 <- vaccinate.coverage.1.29
+    coverage.2 <- vaccinate.coverage.2.29
   }
   
   if(vaccination == TRUE & at >= vaccinate.timeline.30 & at < vaccinate.timeline.31){
-    coverage.1 <- get_param(dat, "vaccinate.coverage.1.30")
-    coverage.2 <- get_param(dat, "vaccinate.coverage.2.30")
+    coverage.1 <- vaccinate.coverage.1.30
+    coverage.2 <- vaccinate.coverage.2.30
   }
   
   if(vaccination == TRUE & at >= vaccinate.timeline.31 & at < vaccinate.timeline.32){
-    coverage.1 <- get_param(dat, "vaccinate.coverage.1.31")
-    coverage.2 <- get_param(dat, "vaccinate.coverage.2.31")
+    coverage.1 <- vaccinate.coverage.1.31
+    coverage.2 <- vaccinate.coverage.2.31
   }
   
   if(vaccination == TRUE & at >= vaccinate.timeline.32 & at < vaccinate.timeline.33){
-    coverage.1 <- get_param(dat, "vaccinate.coverage.1.32")
-    coverage.2 <- get_param(dat, "vaccinate.coverage.2.32")
+    coverage.1 <- vaccinate.coverage.1.32
+    coverage.2 <- vaccinate.coverage.2.32
   }
   
   if(vaccination == TRUE & at >= vaccinate.timeline.33 & at < vaccinate.timeline.34){
-    coverage.1 <- get_param(dat, "vaccinate.coverage.1.33")
-    coverage.2 <- get_param(dat, "vaccinate.coverage.2.33")
+    coverage.1 <- vaccinate.coverage.1.33
+    coverage.2 <- vaccinate.coverage.2.33
   }
   
   if(vaccination == TRUE & at >= vaccinate.timeline.34 & at < vaccinate.timeline.35){
-    coverage.1 <- get_param(dat, "vaccinate.coverage.1.34")
-    coverage.2 <- get_param(dat, "vaccinate.coverage.2.34")
+    coverage.1 <- vaccinate.coverage.1.34
+    coverage.2 <- vaccinate.coverage.2.34
   }
   
   if(vaccination == TRUE & at >= vaccinate.timeline.35 & at < vaccinate.timeline.36){
-    coverage.1 <- get_param(dat, "vaccinate.coverage.1.35")
-    coverage.2 <- get_param(dat, "vaccinate.coverage.2.35")
+    coverage.1 <- vaccinate.coverage.1.35
+    coverage.2 <- vaccinate.coverage.2.35
   }
   
   if(vaccination == TRUE & at >= vaccinate.timeline.36 & at < vaccinate.timeline.37){
-    coverage.1 <- get_param(dat, "vaccinate.coverage.1.36")
-    coverage.2 <- get_param(dat, "vaccinate.coverage.2.36")
+    coverage.1 <- vaccinate.coverage.1.36
+    coverage.2 <- vaccinate.coverage.2.36
   }
   
   if(vaccination == TRUE & at >= vaccinate.timeline.37 & at < vaccinate.timeline.38){
-    coverage.1 <- get_param(dat, "vaccinate.coverage.1.37")
-    coverage.2 <- get_param(dat, "vaccinate.coverage.2.37")
+    coverage.1 <- vaccinate.coverage.1.37
+    coverage.2 <- vaccinate.coverage.2.37
   }
   
   if(vaccination == TRUE & at >= vaccinate.timeline.38 & at < vaccinate.timeline.over){
-    coverage.1 <- get_param(dat, "vaccinate.coverage.1.38")
-    coverage.2 <- get_param(dat, "vaccinate.coverage.2.38")
+    coverage.1 <- vaccinate.coverage.1.38
+    coverage.2 <- vaccinate.coverage.2.38
   }
   
   vaccinate.interval <- get_param(dat, "vaccinate.interval")
@@ -1496,7 +1723,6 @@ vaccinate_msm <- function(dat, at) {
   ## vaccination first dose
   vacc.first.dose.now <- round(coverage.1/duration)
   nVacc.1 <- 0
-  #decide who is eligible
   if(at < vaccinate.timeline.5){idsEligVacc <- which(active == 1 & 
       tx.seek == 1 & (riskg == 4 | riskg == 5 | riskg == 6) & (status == "s" | 
       status == "e" | status == "a") & is.na(vaccTime1))}
@@ -1509,10 +1735,8 @@ vaccinate_msm <- function(dat, at) {
       riskg == 6) & (status == "s" | status == "e" | status == "a") & 
         is.na(vaccTime1))}
   
-  #number of eligible people
   nEligVacc <- length(idsEligVacc)
 
-  #assign individuals to be vaccinated
   if (nEligVacc > vacc.first.dose.now) {
     vecVacc <- sample(idsEligVacc, vacc.first.dose.now, replace=FALSE) #vector of who is vaccinated
     nVacc.1 <- length(vecVacc)
