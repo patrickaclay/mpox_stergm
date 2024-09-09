@@ -12,7 +12,7 @@ library(here)
 library(httr)
 set.seed(12345)
 
-ncdata <- read.csv("NC_data_through_jan25.csv")
+nycdata <- read.csv("NYC_data_through_jan25.csv")
 
 
 #We fit via two procedures. In the first, we eliminate runs that differ
@@ -54,8 +54,8 @@ for(data.index in 1:datasets){
     disp <- mean(model.cases)/(var(model.cases)/mean(model.cases) - 1)
     
     likelihood.results$set[row.index] <- param.index
-    likelihood.results$likelihood[row.index] <- sum((gamma(disp + ncdata$mean.cases)/(factorial(ncdata$mean.cases) * gamma(disp))) * 
-                                                    ((model.cases/(model.cases + disp))^ncdata$mean.cases) * 
+    likelihood.results$likelihood[row.index] <- sum((gamma(disp + nycdata$mean.cases)/(factorial(nycdata$mean.cases) * gamma(disp))) * 
+                                                    ((model.cases/(model.cases + disp))^nycdata$mean.cases) * 
                                                     (1 + model.cases/disp)^(-disp))
     if(sum(model.cases) < lower_cum_case | sum(model.cases) > upper_cum_case){
       likelihood.results$likelihood[row.index] <- 0
@@ -77,7 +77,7 @@ datasets <- 1
 for(data.index in 1:datasets){
   
   current.data.set <- readRDS(paste(
-    paste("prior_runs_real/abc_nc_prior_output",
+    paste("prior_runs_real/abc_nyc_prior_output",
           prior.index + ((data.index-1) * runs.per) + 1,
           prior.index + ((data.index-1) * runs.per) + runs.per,
           sep = '_'),"RDATA",sep="."))
@@ -85,14 +85,14 @@ for(data.index in 1:datasets){
     
     param.index = prior.index + ((data.index-1) * runs.per) + run.index
     
-    model.cases <- current.data.set[[run.index]]$epi$test.flow$sim1[1:length(ncdata$mean.cases)]
+    model.cases <- current.data.set[[run.index]]$epi$test.flow$sim1[1:length(nycdata$mean.cases)]
     model.cases[1] <- 0
     
     disp <- mean(model.cases)/(var(model.cases)/mean(model.cases) - 1)
     
     likelihood.results$set[row.index] <- param.index
-    likelihood.results$likelihood[row.index] <- sum((gamma(disp + ncdata$mean.cases)/(factorial(ncdata$mean.cases) * gamma(disp))) * 
-                                                      ((model.cases/(model.cases + disp))^ncdata$mean.cases) * 
+    likelihood.results$likelihood[row.index] <- sum((gamma(disp + nycdata$mean.cases)/(factorial(nycdata$mean.cases) * gamma(disp))) * 
+                                                      ((model.cases/(model.cases + disp))^nycdata$mean.cases) * 
                                                       (1 + model.cases/disp)^(-disp))
     if(sum(model.cases) < lower_cum_case | sum(model.cases) > upper_cum_case){
       likelihood.results$likelihood[row.index] <- 0
