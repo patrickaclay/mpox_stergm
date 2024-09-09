@@ -1,0 +1,343 @@
+Week,Dose,Strategy,Given,Cumulative,Label
+6/26/2022,Number of First Doses Administered,First Doses,478,478,A
+7/3/2022,Number of First Doses Administered,First Doses,1573,2051,A
+7/10/2022,Number of First Doses Administered,First Doses,2729,4780,A
+7/17/2022,Number of First Doses Administered,First Doses,7298,12078,A
+7/24/2022,Number of First Doses Administered,First Doses,11342,23420,A
+7/31/2022,Number of First Doses Administered,First Doses,15542,38962,A
+8/7/2022,Number of First Doses Administered,First Doses,20139,59101,A
+8/14/2022,Number of First Doses Administered,First Doses,12273,71374,A
+8/21/2022,Number of First Doses Administered,First Doses,6398,77772,A
+8/28/2022,Number of First Doses Administered,First Doses,6118,83890,A
+9/4/2022,Number of First Doses Administered,First Doses,3056,86946,A
+9/11/2022,Number of First Doses Administered,First Doses,2490,89436,A
+9/18/2022,Number of First Doses Administered,First Doses,1946,91382,A
+9/25/2022,Number of First Doses Administered,First Doses,1748,93130,A
+10/2/2022,Number of First Doses Administered,First Doses,1255,94385,A
+10/9/2022,Number of First Doses Administered,First Doses,1090,95475,A
+10/16/2022,Number of First Doses Administered,First Doses,845,96320,A
+10/23/2022,Number of First Doses Administered,First Doses,706,97026,A
+10/30/2022,Number of First Doses Administered,First Doses,455,97481,A
+11/6/2022,Number of First Doses Administered,First Doses,393,97874,A
+11/13/2022,Number of First Doses Administered,First Doses,359,98233,A
+11/20/2022,Number of First Doses Administered,First Doses,159,98392,A
+11/27/2022,Number of First Doses Administered,First Doses,222,98614,A
+12/4/2022,Number of First Doses Administered,First Doses,148,98762,A
+12/11/2022,Number of First Doses Administered,First Doses,150,98912,A
+12/18/2022,Number of First Doses Administered,First Doses,158,99070,A
+12/25/2022,Number of First Doses Administered,First Doses,115,99185,A
+1/1/2023,Number of First Doses Administered,First Doses,118,99303,A
+1/8/2023,Number of First Doses Administered,First Doses,111,99414,A
+1/15/2023,Number of First Doses Administered,First Doses,98,99512,A
+1/22/2023,Number of First Doses Administered,First Doses,95,99607,A
+1/29/2023,Number of First Doses Administered,First Doses,101,99708,A
+2/5/2023,Number of First Doses Administered,First Doses,87,99795,A
+2/12/2023,Number of First Doses Administered,First Doses,74,99869,A
+2/19/2023,Number of First Doses Administered,First Doses,48,99917,A
+2/26/2023,Number of First Doses Administered,First Doses,53,99970,A
+3/5/2023,Number of First Doses Administered,First Doses,66,100036,A
+3/12/2023,Number of First Doses Administered,First Doses,66,100102,A
+6/26/2022,Number of Second Doses Administered,First Doses,6,6,B
+7/3/2022,Number of Second Doses Administered,First Doses,9,15,B
+7/10/2022,Number of Second Doses Administered,First Doses,24,39,B
+7/17/2022,Number of Second Doses Administered,First Doses,43,82,B
+7/24/2022,Number of Second Doses Administered,First Doses,65,147,B
+7/31/2022,Number of Second Doses Administered,First Doses,96,243,B
+8/7/2022,Number of Second Doses Administered,First Doses,216,459,B
+8/14/2022,Number of Second Doses Administered,First Doses,287,746,B
+8/21/2022,Number of Second Doses Administered,First Doses,213,959,B
+8/28/2022,Number of Second Doses Administered,First Doses,263,1222,B
+9/4/2022,Number of Second Doses Administered,First Doses,2340,3562,B
+9/11/2022,Number of Second Doses Administered,First Doses,7193,10755,B
+9/18/2022,Number of Second Doses Administered,First Doses,14588,25343,B
+9/25/2022,Number of Second Doses Administered,First Doses,9510,34853,B
+10/2/2022,Number of Second Doses Administered,First Doses,5390,40243,B
+10/9/2022,Number of Second Doses Administered,First Doses,2264,42507,B
+10/16/2022,Number of Second Doses Administered,First Doses,1717,44224,B
+10/23/2022,Number of Second Doses Administered,First Doses,1284,45508,B
+10/30/2022,Number of Second Doses Administered,First Doses,853,46361,B
+11/6/2022,Number of Second Doses Administered,First Doses,1040,47401,B
+11/13/2022,Number of Second Doses Administered,First Doses,705,48106,B
+11/20/2022,Number of Second Doses Administered,First Doses,227,48333,B
+11/27/2022,Number of Second Doses Administered,First Doses,342,48675,B
+12/4/2022,Number of Second Doses Administered,First Doses,269,48944,B
+12/11/2022,Number of Second Doses Administered,First Doses,276,49220,B
+12/18/2022,Number of Second Doses Administered,First Doses,214,49434,B
+12/25/2022,Number of Second Doses Administered,First Doses,134,49568,B
+1/1/2023,Number of Second Doses Administered,First Doses,187,49755,B
+1/8/2023,Number of Second Doses Administered,First Doses,182,49937,B
+1/15/2023,Number of Second Doses Administered,First Doses,146,50083,B
+1/22/2023,Number of Second Doses Administered,First Doses,89,50172,B
+1/29/2023,Number of Second Doses Administered,First Doses,117,50289,B
+2/5/2023,Number of Second Doses Administered,First Doses,100,50389,B
+2/12/2023,Number of Second Doses Administered,First Doses,88,50477,B
+2/19/2023,Number of Second Doses Administered,First Doses,78,50555,B
+2/26/2023,Number of Second Doses Administered,First Doses,101,50656,B
+3/5/2023,Number of Second Doses Administered,First Doses,86,50742,B
+3/12/2023,Number of Second Doses Administered,First Doses,70,50812,B
+6/26/2022,Number of First Doses Administered,Intermediate,484,484,A
+7/3/2022,Number of First Doses Administered,Intermediate,1582,2066,A
+7/10/2022,Number of First Doses Administered,Intermediate,2753,4819,A
+7/17/2022,Number of First Doses Administered,Intermediate,7341,12160,A
+7/24/2022,Number of First Doses Administered,Intermediate,10923,23083,A
+7/31/2022,Number of First Doses Administered,Intermediate,14056,37139,A
+8/7/2022,Number of First Doses Administered,Intermediate,17602,54741,A
+8/14/2022,Number of First Doses Administered,Intermediate,5219,59960,A
+8/21/2022,Number of First Doses Administered,Intermediate,0,59960,A
+8/28/2022,Number of First Doses Administered,Intermediate,0,59960,A
+9/4/2022,Number of First Doses Administered,Intermediate,0,59960,A
+9/11/2022,Number of First Doses Administered,Intermediate,0,59960,A
+9/18/2022,Number of First Doses Administered,Intermediate,0,59960,A
+9/25/2022,Number of First Doses Administered,Intermediate,8063,68023,A
+10/2/2022,Number of First Doses Administered,Intermediate,6645,74668,A
+10/9/2022,Number of First Doses Administered,Intermediate,3354,78022,A
+10/16/2022,Number of First Doses Administered,Intermediate,2562,80584,A
+10/23/2022,Number of First Doses Administered,Intermediate,0,80584,A
+10/30/2022,Number of First Doses Administered,Intermediate,0,80584,A
+11/6/2022,Number of First Doses Administered,Intermediate,0,80584,A
+11/13/2022,Number of First Doses Administered,Intermediate,0,80584,A
+11/20/2022,Number of First Doses Administered,Intermediate,0,80584,A
+11/27/2022,Number of First Doses Administered,Intermediate,0,80584,A
+12/4/2022,Number of First Doses Administered,Intermediate,0,80584,A
+12/11/2022,Number of First Doses Administered,Intermediate,0,80584,A
+12/18/2022,Number of First Doses Administered,Intermediate,0,80584,A
+12/25/2022,Number of First Doses Administered,Intermediate,0,80584,A
+1/1/2023,Number of First Doses Administered,Intermediate,0,80584,A
+1/8/2023,Number of First Doses Administered,Intermediate,0,80584,A
+1/15/2023,Number of First Doses Administered,Intermediate,0,80584,A
+1/22/2023,Number of First Doses Administered,Intermediate,0,80584,A
+1/29/2023,Number of First Doses Administered,Intermediate,0,80584,A
+2/5/2023,Number of First Doses Administered,Intermediate,0,80584,A
+2/12/2023,Number of First Doses Administered,Intermediate,0,80584,A
+2/19/2023,Number of First Doses Administered,Intermediate,0,80584,A
+2/26/2023,Number of First Doses Administered,Intermediate,0,80584,A
+3/5/2023,Number of First Doses Administered,Intermediate,0,80584,A
+3/12/2023,Number of First Doses Administered,Intermediate,0,80584,A
+6/26/2022,Number of Second Doses Administered,Intermediate,0,0,B
+7/3/2022,Number of Second Doses Administered,Intermediate,0,0,B
+7/10/2022,Number of Second Doses Administered,Intermediate,0,0,B
+7/17/2022,Number of Second Doses Administered,Intermediate,0,0,B
+7/24/2022,Number of Second Doses Administered,Intermediate,484,484,B
+7/31/2022,Number of Second Doses Administered,Intermediate,1582,2066,B
+8/7/2022,Number of Second Doses Administered,Intermediate,2753,4819,B
+8/14/2022,Number of Second Doses Administered,Intermediate,7341,12160,B
+8/21/2022,Number of Second Doses Administered,Intermediate,6611,18771,B
+8/28/2022,Number of Second Doses Administered,Intermediate,6381,25152,B
+9/4/2022,Number of Second Doses Administered,Intermediate,5396,30548,B
+9/11/2022,Number of Second Doses Administered,Intermediate,9683,40231,B
+9/18/2022,Number of Second Doses Administered,Intermediate,16534,56765,B
+9/25/2022,Number of Second Doses Administered,Intermediate,3195,59960,B
+10/2/2022,Number of Second Doses Administered,Intermediate,0,59960,B
+10/9/2022,Number of Second Doses Administered,Intermediate,0,59960,B
+10/16/2022,Number of Second Doses Administered,Intermediate,0,59960,B
+10/23/2022,Number of Second Doses Administered,Intermediate,1990,61950,B
+10/30/2022,Number of Second Doses Administered,Intermediate,1308,63258,B
+11/6/2022,Number of Second Doses Administered,Intermediate,1433,64691,B
+11/13/2022,Number of Second Doses Administered,Intermediate,1064,65755,B
+11/20/2022,Number of Second Doses Administered,Intermediate,386,66141,B
+11/27/2022,Number of Second Doses Administered,Intermediate,564,66705,B
+12/4/2022,Number of Second Doses Administered,Intermediate,417,67122,B
+12/11/2022,Number of Second Doses Administered,Intermediate,426,67548,B
+12/18/2022,Number of Second Doses Administered,Intermediate,372,67920,B
+12/25/2022,Number of Second Doses Administered,Intermediate,249,68169,B
+1/1/2023,Number of Second Doses Administered,Intermediate,305,68474,B
+1/8/2023,Number of Second Doses Administered,Intermediate,293,68767,B
+1/15/2023,Number of Second Doses Administered,Intermediate,244,69011,B
+1/22/2023,Number of Second Doses Administered,Intermediate,184,69195,B
+1/29/2023,Number of Second Doses Administered,Intermediate,218,69413,B
+2/5/2023,Number of Second Doses Administered,Intermediate,187,69600,B
+2/12/2023,Number of Second Doses Administered,Intermediate,162,69762,B
+2/19/2023,Number of Second Doses Administered,Intermediate,126,69888,B
+2/26/2023,Number of Second Doses Administered,Intermediate,154,70042,B
+3/5/2023,Number of Second Doses Administered,Intermediate,152,70194,B
+3/12/2023,Number of Second Doses Administered,Intermediate,136,70330,B
+6/26/2022,Number of First Doses Administered,Second Doses,242,242,A
+7/3/2022,Number of First Doses Administered,Second Doses,791,1033,A
+7/10/2022,Number of First Doses Administered,Second Doses,1376.5,2409.5,A
+7/17/2022,Number of First Doses Administered,Second Doses,3670.5,6080,A
+7/24/2022,Number of First Doses Administered,Second Doses,5703.5,11783.5,A
+7/31/2022,Number of First Doses Administered,Second Doses,7819,19602.5,A
+8/7/2022,Number of First Doses Administered,Second Doses,10177.5,29780,A
+8/14/2022,Number of First Doses Administered,Second Doses,6280,36060,A
+8/21/2022,Number of First Doses Administered,Second Doses,3305.5,39365.5,A
+8/28/2022,Number of First Doses Administered,Second Doses,3190.5,42556,A
+9/4/2022,Number of First Doses Administered,Second Doses,2698,45254,A
+9/11/2022,Number of First Doses Administered,Second Doses,4841.5,50095.5,A
+9/18/2022,Number of First Doses Administered,Second Doses,8267,58362.5,A
+9/25/2022,Number of First Doses Administered,Second Doses,5629,63991.5,A
+10/2/2022,Number of First Doses Administered,Second Doses,3322.5,67314,A
+10/9/2022,Number of First Doses Administered,Second Doses,1677,68991,A
+10/16/2022,Number of First Doses Administered,Second Doses,1281,70272,A
+10/23/2022,Number of First Doses Administered,Second Doses,995,71267,A
+10/30/2022,Number of First Doses Administered,Second Doses,654,71921,A
+11/6/2022,Number of First Doses Administered,Second Doses,716.5,72637.5,A
+11/13/2022,Number of First Doses Administered,Second Doses,532,73169.5,A
+11/20/2022,Number of First Doses Administered,Second Doses,193,73362.5,A
+11/27/2022,Number of First Doses Administered,Second Doses,282,73644.5,A
+12/4/2022,Number of First Doses Administered,Second Doses,208.5,73853,A
+12/11/2022,Number of First Doses Administered,Second Doses,213,74066,A
+12/18/2022,Number of First Doses Administered,Second Doses,186,74252,A
+12/25/2022,Number of First Doses Administered,Second Doses,124.5,74376.5,A
+1/1/2023,Number of First Doses Administered,Second Doses,152.5,74529,A
+1/8/2023,Number of First Doses Administered,Second Doses,146.5,74675.5,A
+1/15/2023,Number of First Doses Administered,Second Doses,122,74797.5,A
+1/22/2023,Number of First Doses Administered,Second Doses,92,74889.5,A
+1/29/2023,Number of First Doses Administered,Second Doses,109,74998.5,A
+2/5/2023,Number of First Doses Administered,Second Doses,93.5,75092,A
+2/12/2023,Number of First Doses Administered,Second Doses,81,75173,A
+2/19/2023,Number of First Doses Administered,Second Doses,63,75236,A
+2/26/2023,Number of First Doses Administered,Second Doses,77,75313,A
+3/5/2023,Number of First Doses Administered,Second Doses,76,75389,A
+3/12/2023,Number of First Doses Administered,Second Doses,68,75457,A
+6/26/2022,Number of Second Doses Administered,Second Doses,0,0,B
+7/3/2022,Number of Second Doses Administered,Second Doses,0,0,B
+7/10/2022,Number of Second Doses Administered,Second Doses,0,0,B
+7/17/2022,Number of Second Doses Administered,Second Doses,0,0,B
+7/24/2022,Number of Second Doses Administered,Second Doses,0,0,B
+7/31/2022,Number of Second Doses Administered,Second Doses,242,242,B
+8/7/2022,Number of Second Doses Administered,Second Doses,791,1033,B
+8/14/2022,Number of Second Doses Administered,Second Doses,1376.5,2409.5,B
+8/21/2022,Number of Second Doses Administered,Second Doses,3670.5,6080,B
+8/28/2022,Number of Second Doses Administered,Second Doses,5703.5,11783.5,B
+9/4/2022,Number of Second Doses Administered,Second Doses,7819,19602.5,B
+9/11/2022,Number of Second Doses Administered,Second Doses,10177.5,29780,B
+9/18/2022,Number of Second Doses Administered,Second Doses,6280,36060,B
+9/25/2022,Number of Second Doses Administered,Second Doses,3305.5,39365.5,B
+10/2/2022,Number of Second Doses Administered,Second Doses,3190.5,42556,B
+10/9/2022,Number of Second Doses Administered,Second Doses,2698,45254,B
+10/16/2022,Number of Second Doses Administered,Second Doses,4841.5,50095.5,B
+10/23/2022,Number of Second Doses Administered,Second Doses,8267,58362.5,B
+10/30/2022,Number of Second Doses Administered,Second Doses,5629,63991.5,B
+11/6/2022,Number of Second Doses Administered,Second Doses,3322.5,67314,B
+11/13/2022,Number of Second Doses Administered,Second Doses,1677,68991,B
+11/20/2022,Number of Second Doses Administered,Second Doses,1281,70272,B
+11/27/2022,Number of Second Doses Administered,Second Doses,995,71267,B
+12/4/2022,Number of Second Doses Administered,Second Doses,654,71921,B
+12/11/2022,Number of Second Doses Administered,Second Doses,716.5,72637.5,B
+12/18/2022,Number of Second Doses Administered,Second Doses,532,73169.5,B
+12/25/2022,Number of Second Doses Administered,Second Doses,193,73362.5,B
+1/1/2023,Number of Second Doses Administered,Second Doses,282,73644.5,B
+1/8/2023,Number of Second Doses Administered,Second Doses,208.5,73853,B
+1/15/2023,Number of Second Doses Administered,Second Doses,213,74066,B
+1/22/2023,Number of Second Doses Administered,Second Doses,186,74252,B
+1/29/2023,Number of Second Doses Administered,Second Doses,124.5,74376.5,B
+2/5/2023,Number of Second Doses Administered,Second Doses,152.5,74529,B
+2/12/2023,Number of Second Doses Administered,Second Doses,146.5,74675.5,B
+2/19/2023,Number of Second Doses Administered,Second Doses,122,74797.5,B
+2/26/2023,Number of Second Doses Administered,Second Doses,92,74889.5,B
+3/5/2023,Number of Second Doses Administered,Second Doses,109,74998.5,B
+3/12/2023,Number of Second Doses Administered,Second Doses,93.5,75092,B
+6/26/2022,Number of Total Doses Administered,First Doses,484,484,C
+7/3/2022,Number of Total Doses Administered,First Doses,1582,2066,C
+7/10/2022,Number of Total Doses Administered,First Doses,2753,4819,C
+7/17/2022,Number of Total Doses Administered,First Doses,7341,12160,C
+7/24/2022,Number of Total Doses Administered,First Doses,11407,23567,C
+7/31/2022,Number of Total Doses Administered,First Doses,15638,39205,C
+8/7/2022,Number of Total Doses Administered,First Doses,20355,59560,C
+8/14/2022,Number of Total Doses Administered,First Doses,12560,72120,C
+8/21/2022,Number of Total Doses Administered,First Doses,6611,78731,C
+8/28/2022,Number of Total Doses Administered,First Doses,6381,85112,C
+9/4/2022,Number of Total Doses Administered,First Doses,5396,90508,C
+9/11/2022,Number of Total Doses Administered,First Doses,9683,100191,C
+9/18/2022,Number of Total Doses Administered,First Doses,16534,116725,C
+9/25/2022,Number of Total Doses Administered,First Doses,11258,127983,C
+10/2/2022,Number of Total Doses Administered,First Doses,6645,134628,C
+10/9/2022,Number of Total Doses Administered,First Doses,3354,137982,C
+10/16/2022,Number of Total Doses Administered,First Doses,2562,140544,C
+10/23/2022,Number of Total Doses Administered,First Doses,1990,142534,C
+10/30/2022,Number of Total Doses Administered,First Doses,1308,143842,C
+11/6/2022,Number of Total Doses Administered,First Doses,1433,145275,C
+11/13/2022,Number of Total Doses Administered,First Doses,1064,146339,C
+11/20/2022,Number of Total Doses Administered,First Doses,386,146725,C
+11/27/2022,Number of Total Doses Administered,First Doses,564,147289,C
+12/4/2022,Number of Total Doses Administered,First Doses,417,147706,C
+12/11/2022,Number of Total Doses Administered,First Doses,426,148132,C
+12/18/2022,Number of Total Doses Administered,First Doses,372,148504,C
+12/25/2022,Number of Total Doses Administered,First Doses,249,148753,C
+1/1/2023,Number of Total Doses Administered,First Doses,305,149058,C
+1/8/2023,Number of Total Doses Administered,First Doses,293,149351,C
+1/15/2023,Number of Total Doses Administered,First Doses,244,149595,C
+1/22/2023,Number of Total Doses Administered,First Doses,184,149779,C
+1/29/2023,Number of Total Doses Administered,First Doses,218,149997,C
+2/5/2023,Number of Total Doses Administered,First Doses,187,150184,C
+2/12/2023,Number of Total Doses Administered,First Doses,162,150346,C
+2/19/2023,Number of Total Doses Administered,First Doses,126,150472,C
+2/26/2023,Number of Total Doses Administered,First Doses,154,150626,C
+3/5/2023,Number of Total Doses Administered,First Doses,152,150778,C
+3/12/2023,Number of Total Doses Administered,First Doses,136,150914,C
+6/26/2022,Number of Total Doses Administered,Intermediate,484,484,C
+7/3/2022,Number of Total Doses Administered,Intermediate,1582,2066,C
+7/10/2022,Number of Total Doses Administered,Intermediate,2753,4819,C
+7/17/2022,Number of Total Doses Administered,Intermediate,7341,12160,C
+7/24/2022,Number of Total Doses Administered,Intermediate,11407,23567,C
+7/31/2022,Number of Total Doses Administered,Intermediate,15638,39205,C
+8/7/2022,Number of Total Doses Administered,Intermediate,20355,59560,C
+8/14/2022,Number of Total Doses Administered,Intermediate,12560,72120,C
+8/21/2022,Number of Total Doses Administered,Intermediate,6611,78731,C
+8/28/2022,Number of Total Doses Administered,Intermediate,6381,85112,C
+9/4/2022,Number of Total Doses Administered,Intermediate,5396,90508,C
+9/11/2022,Number of Total Doses Administered,Intermediate,9683,100191,C
+9/18/2022,Number of Total Doses Administered,Intermediate,16534,116725,C
+9/25/2022,Number of Total Doses Administered,Intermediate,11258,127983,C
+10/2/2022,Number of Total Doses Administered,Intermediate,6645,134628,C
+10/9/2022,Number of Total Doses Administered,Intermediate,3354,137982,C
+10/16/2022,Number of Total Doses Administered,Intermediate,2562,140544,C
+10/23/2022,Number of Total Doses Administered,Intermediate,1990,142534,C
+10/30/2022,Number of Total Doses Administered,Intermediate,1308,143842,C
+11/6/2022,Number of Total Doses Administered,Intermediate,1433,145275,C
+11/13/2022,Number of Total Doses Administered,Intermediate,1064,146339,C
+11/20/2022,Number of Total Doses Administered,Intermediate,386,146725,C
+11/27/2022,Number of Total Doses Administered,Intermediate,564,147289,C
+12/4/2022,Number of Total Doses Administered,Intermediate,417,147706,C
+12/11/2022,Number of Total Doses Administered,Intermediate,426,148132,C
+12/18/2022,Number of Total Doses Administered,Intermediate,372,148504,C
+12/25/2022,Number of Total Doses Administered,Intermediate,249,148753,C
+1/1/2023,Number of Total Doses Administered,Intermediate,305,149058,C
+1/8/2023,Number of Total Doses Administered,Intermediate,293,149351,C
+1/15/2023,Number of Total Doses Administered,Intermediate,244,149595,C
+1/22/2023,Number of Total Doses Administered,Intermediate,184,149779,C
+1/29/2023,Number of Total Doses Administered,Intermediate,218,149997,C
+2/5/2023,Number of Total Doses Administered,Intermediate,187,150184,C
+2/12/2023,Number of Total Doses Administered,Intermediate,162,150346,C
+2/19/2023,Number of Total Doses Administered,Intermediate,126,150472,C
+2/26/2023,Number of Total Doses Administered,Intermediate,154,150626,C
+3/5/2023,Number of Total Doses Administered,Intermediate,152,150778,C
+3/12/2023,Number of Total Doses Administered,Intermediate,136,150914,C
+6/26/2022,Number of Total Doses Administered,Second Doses,242,242,C
+7/3/2022,Number of Total Doses Administered,Second Doses,791,1033,C
+7/10/2022,Number of Total Doses Administered,Second Doses,1376.5,2409.5,C
+7/17/2022,Number of Total Doses Administered,Second Doses,3670.5,6080,C
+7/24/2022,Number of Total Doses Administered,Second Doses,5703.5,11783.5,C
+7/31/2022,Number of Total Doses Administered,Second Doses,8061,19844.5,C
+8/7/2022,Number of Total Doses Administered,Second Doses,10968.5,30813,C
+8/14/2022,Number of Total Doses Administered,Second Doses,7656.5,38469.5,C
+8/21/2022,Number of Total Doses Administered,Second Doses,6976,45445.5,C
+8/28/2022,Number of Total Doses Administered,Second Doses,8894,54339.5,C
+9/4/2022,Number of Total Doses Administered,Second Doses,10517,64856.5,C
+9/11/2022,Number of Total Doses Administered,Second Doses,15019,79875.5,C
+9/18/2022,Number of Total Doses Administered,Second Doses,14547,94422.5,C
+9/25/2022,Number of Total Doses Administered,Second Doses,8934.5,103357,C
+10/2/2022,Number of Total Doses Administered,Second Doses,6513,109870,C
+10/9/2022,Number of Total Doses Administered,Second Doses,4375,114245,C
+10/16/2022,Number of Total Doses Administered,Second Doses,6122.5,120367.5,C
+10/23/2022,Number of Total Doses Administered,Second Doses,9262,129629.5,C
+10/30/2022,Number of Total Doses Administered,Second Doses,6283,135912.5,C
+11/6/2022,Number of Total Doses Administered,Second Doses,4039,139951.5,C
+11/13/2022,Number of Total Doses Administered,Second Doses,2209,142160.5,C
+11/20/2022,Number of Total Doses Administered,Second Doses,1474,143634.5,C
+11/27/2022,Number of Total Doses Administered,Second Doses,1277,144911.5,C
+12/4/2022,Number of Total Doses Administered,Second Doses,862.5,145774,C
+12/11/2022,Number of Total Doses Administered,Second Doses,929.5,146703.5,C
+12/18/2022,Number of Total Doses Administered,Second Doses,718,147421.5,C
+12/25/2022,Number of Total Doses Administered,Second Doses,317.5,147739,C
+1/1/2023,Number of Total Doses Administered,Second Doses,434.5,148173.5,C
+1/8/2023,Number of Total Doses Administered,Second Doses,355,148528.5,C
+1/15/2023,Number of Total Doses Administered,Second Doses,335,148863.5,C
+1/22/2023,Number of Total Doses Administered,Second Doses,278,149141.5,C
+1/29/2023,Number of Total Doses Administered,Second Doses,233.5,149375,C
+2/5/2023,Number of Total Doses Administered,Second Doses,246,149621,C
+2/12/2023,Number of Total Doses Administered,Second Doses,227.5,149848.5,C
+2/19/2023,Number of Total Doses Administered,Second Doses,185,150033.5,C
+2/26/2023,Number of Total Doses Administered,Second Doses,169,150202.5,C
+3/5/2023,Number of Total Doses Administered,Second Doses,185,150387.5,C
+3/12/2023,Number of Total Doses Administered,Second Doses,161.5,150549,C
