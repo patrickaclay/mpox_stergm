@@ -52,7 +52,7 @@ behavior.change.amount.param = params.set$behaveadapt[1]
 
 
 #source(here("02_modules_gradual_vacc.R"))
-    source(here("nc_modules.R"))
+    source(here("00_mpox_stergm_modules.R"))
 # load in all other parameters
 params <- param_msm()
 # sequence of modules to run model
