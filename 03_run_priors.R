@@ -94,7 +94,7 @@ for(loops.i in 0:(loops-1)){
     
     
   }
-  saveRDS(mod_output_trad, file=paste(paste("prior_runs_real/abc_nc_output_low",(last.run + (loops.i * runs.per.loop) + 1),(last.run + (loops.i * runs.per.loop) + runs.per.loop),sep="_"),"RData",sep="."))
+  saveRDS(mod_output_trad, file=paste(paste("prior_runs_real/abc_nyc_output_low",(last.run + (loops.i * runs.per.loop) + 1),(last.run + (loops.i * runs.per.loop) + runs.per.loop),sep="_"),"RData",sep="."))
   
   rm(mod_output_trad)
 
@@ -130,7 +130,7 @@ for(loops.i in 0:(loops-1)){
     
     
   }
-  saveRDS(mod_output_trad, file=paste(paste("prior_runs_real/abc_nc_prior_output",(last.run + (loops.i * runs.per.loop) + 1),(last.run + (loops.i * runs.per.loop) + runs.per.loop),sep="_"),"RData",sep="."))
+  saveRDS(mod_output_trad, file=paste(paste("prior_runs_real/abc_nyc_prior_output",(last.run + (loops.i * runs.per.loop) + 1),(last.run + (loops.i * runs.per.loop) + runs.per.loop),sep="_"),"RData",sep="."))
   
   #rm(mod_output_trad)
   
