@@ -1,22 +1,20 @@
-##This code contains modules for simulating mpox transmission
-##through a population of MSM using a STERGM framework
-##Written by Patrick Clay and Emily Pollock
-##last updated 8/5/2024
 
-# param_msm enters all model parameters
-# control_msm runs all modules in a particular order, determines number and length of runs
+#######
+#This code contains modules for the model
+#
 # initialize_msm builds the initial network and assigns attributes to nodes
+# vaccTime enters all model parameters
+# control_msm runs all modules in a particular order, determines number and length of runs
 # simnet_msm controls the breaking and creating of sexual contact at each timestep
-# edges_correct_msm determines behavioral adaptation
+# edges_correct_msm is function which simnet_msm relies on
 # infect_msm determines new infections at each timestep
 # discord_edgelist and discord_edgelist_asym determine susceptible/infected pairs
-# progress_msm determines state transition for infected individuals
-# prevalence_msm - records summary statistics (e.g. new infections)
-# vaccinate_msm - vaccinates individuals
-# init_tergmLite - I overwrite part of the epimodel base functions
-#because they were throwing errors
+# progress2 determines state transition for infected individuals
+# prevalence_msm - the code breaks if we don't leave this in. 
 
 
+
+##################### Netsim Setup Functions #####################################
 
 # Parameters ####
 param_msm <- function(init.inf = 5,             # initial number of infected people 
@@ -31,7 +29,7 @@ param_msm <- function(init.inf = 5,             # initial number of infected peo
                       vaccine.multiply = vaccine.multiplier,
                       vaccination.proportion.msm = vaccination.proportion.param,
                       strategy = vacc.strategy,
-
+                      
                       act.rate.main = 1.54/7, 
                       act.rate.casual = 0.96/7, 
                       act.rate.instant = 1, 
@@ -196,8 +194,8 @@ param_msm <- function(init.inf = 5,             # initial number of infected peo
                       rel.behave.change.31 = 0.301,
                       rel.behave.change.32 = 0.296,
                       rel.behave.change.33 = 0.185,
-
-
+                      
+                      
                       
                       ...) {
   
@@ -336,7 +334,7 @@ initialize_msm <- function(x, param, init, control, s) { #So this is what sets u
   # vaccinated time vector (NA until vaccinated)
   vaccTime1 <- rep(NA, num)
   vaccTime2 <- rep(NA, num)
-
+  
   # infection time vector (NA until infected)
   infTime <- rep(NA, num)
   infTime[infected] <- 1
@@ -373,7 +371,7 @@ initialize_msm <- function(x, param, init, control, s) { #So this is what sets u
   dat <- set_attr(dat, "recTime", rep(NA,num)) # infection recovery time 
   dat <- set_attr(dat, "testTime", rep(NA,num)) # infection testing time 
   dat <- set_attr(dat, "pre.riskg", riskg) #holds their pre-infection riskgroup as a reference. 
-
+  
   dat$num.nw <- 3
   
   #### Other Setup ####
@@ -390,9 +388,9 @@ initialize_msm <- function(x, param, init, control, s) { #So this is what sets u
   
   # Setup Partner List for all 3 networks 
   # (only gets updated if tracking turned on in control function)
-#  for (n_network in seq_len(3)) {
-#    dat <- update_cumulative_edgelist(dat, n_network)
-#  }
+  #  for (n_network in seq_len(3)) {
+  #    dat <- update_cumulative_edgelist(dat, n_network)
+  #  }
   
   # Network statistics
   if (dat[["control"]][["save.nwstats"]]) {
@@ -432,11 +430,11 @@ simnet_msm <- function(dat, at) {
   
   edges_correct_msm <- function(dat, at) {
     
-      behavior.change         <- get_param(dat, "behavior.change")
-      behavior.delay          <- get_param(dat, "behavior.delay")
-
-    if(behavior.change == TRUE){
+    behavior.change         <- get_param(dat, "behavior.change")
+    behavior.delay          <- get_param(dat, "behavior.delay")
     
+    if(behavior.change == TRUE){
+      
       rel.behave.change.1         <- get_param(dat, "rel.behave.change.1")
       rel.behave.change.2         <- get_param(dat, "rel.behave.change.2")
       rel.behave.change.3         <- get_param(dat, "rel.behave.change.3")
@@ -483,32 +481,32 @@ simnet_msm <- function(dat, at) {
                              rel.behave.change.31,rel.behave.change.32,rel.behave.change.33)
       
       behavior.change.amount <- get_param(dat, "behavior.change.amount")
-
+      
       if(((at-behavior.delay)-1) < 2 | ((at-behavior.delay)-1) > 230){week.yesterday = 33}
       if(((at-behavior.delay)-1) >= 2 & ((at-behavior.delay)-1) <= 230){week.yesterday = floor((((at-behavior.delay)-1)-2)/7)+1}
       if((at-behavior.delay) < 2 | (at-behavior.delay) > 230){week.today = 33}
       if((at-behavior.delay) >= 2 & (at-behavior.delay) <= 230){week.today = floor(((at-behavior.delay)-2)/7)+1}
-    old.num <- sum(dat$attr$active == 1, na.rm = TRUE) * (1 - behavior.change.amount * rel.behave.change[week.yesterday])                     #sets number of nodes at prior timestep
-    new.num <- sum(dat$attr$active == 1, na.rm = TRUE) * (1 - behavior.change.amount * rel.behave.change[week.today]) #sets number of nodes at this timestep
-    adjust <- log(new.num) - log(old.num)               #calculates log difference between those two
-    
-    
-    for (i in length(dat$nwparam)) {
+      old.num <- sum(dat$attr$active == 1, na.rm = TRUE) * (1 - behavior.change.amount * rel.behave.change[week.yesterday])                     #sets number of nodes at prior timestep
+      new.num <- sum(dat$attr$active == 1, na.rm = TRUE) * (1 - behavior.change.amount * rel.behave.change[week.today]) #sets number of nodes at this timestep
+      adjust <- log(new.num) - log(old.num)               #calculates log difference between those two
       
-      coef.form1 <- get_nwparam(dat, network = i)$coef.form #get formation coefficient
-      coef.form1[1] <- coef.form1[1] + adjust               #says to increase or decrease formation of edges
-      dat$nwparam[[i]]$coef.form <- coef.form1              #re-records this number
-    }
+      
+      for (i in length(dat$nwparam)) {
+        
+        coef.form1 <- get_nwparam(dat, network = i)$coef.form #get formation coefficient
+        coef.form1[1] <- coef.form1[1] + adjust               #says to increase or decrease formation of edges
+        dat$nwparam[[i]]$coef.form <- coef.form1              #re-records this number
+      }
     }
     
-
+    
     return(dat)
     
     
     
- }
+  }
   
-
+  
   
   ##end nesting##
   #########################
@@ -523,62 +521,62 @@ simnet_msm <- function(dat, at) {
   save.nwstats <- get_control(dat, "save.nwstats")
   nwstats.formulas <- get_control(dat, "nwstats.formulas")
   
-    ## Main network
-    for (i in 1:length(dat$el)) {    #I believe this is where loops through overlapping networks
-      nwparam <- EpiModel::get_nwparam(dat, network = i)   #get parameters of this network
-      isTERGM <- ifelse(nwparam$coef.diss$duration > 1, TRUE, FALSE) #set isTERGM to true is relationships non-instantaneous
-      
-      nwL <- networkLite(dat[["el"]][[i]], dat[["attr"]])
-      
-      
-#      if (get_control(dat, "tergmLite.track.duration") == TRUE) { #figure out how long relationships have lasted
-#        nwL %n% "time" <- dat[["nw"]][[i]] %n% "time"
-#        nwL %n% "lasttoggle" <- dat[["nw"]][[i]] %n% "lasttoggle"
-#      }
-      
-      if(i==1){
-        # update pers degree (nodal attribute based on network status)
-        deg.pers <- get_attr(dat, "deg.pers")
-        deg.pers <- get_degree(dat[["el"]][[2]])
-        dat <- set_attr(dat, "deg.pers", deg.pers)
-      }
-      
-      if(i==2){
-        # update main degree (nodal attribute based on network status)
-        deg.main <- get_attr(dat, "deg.main")
-        deg.main <- get_degree(dat[["el"]][[1]])
-        dat <- set_attr(dat, "deg.main", deg.main)
-      }
-      
-      if (isTERGM == TRUE) { #The following happens only if tergm (relationships last)
-        dat[["nw"]][[i]] <- simulate( #forms, dissolves contacts. generic function. simulate distribution corresponding to fitted model object
-          nwL, #what are the attributes of each node
-          formation = nwparam[["formation"]],
-          dissolution = nwparam[["coef.diss"]][["dissolution"]],
-          coef.form = nwparam[["coef.form"]],
-          coef.diss = nwparam[["coef.diss"]][["coef.adj"]],
-          constraints = nwparam[["constraints"]],
-          time.start = at - 1,
-          time.slices = 1,
-          time.offset = 1,
-          control = set.control.stergm,
-          output = "final"
-        )
-      } else {  #The following happens if tergm is false, e.g. instantaneous relationships
-        dat[["nw"]][[i]] <- simulate( #forms contacts
-          basis = nwL,
-          object = nwparam[["formation"]],
-          coef = nwparam[["coef.form"]],
-          constraints = nwparam[["constraints"]],
-          control = set.control.ergm,
-          dynamic = FALSE,
-          nsim = 1,
-          output = "network"
-        )
-      }
-      
-      dat[["el"]][[i]] <- as.edgelist(dat[["nw"]][[i]])
-  
+  ## Main network
+  for (i in 1:length(dat$el)) {    #I believe this is where loops through overlapping networks
+    nwparam <- EpiModel::get_nwparam(dat, network = i)   #get parameters of this network
+    isTERGM <- ifelse(nwparam$coef.diss$duration > 1, TRUE, FALSE) #set isTERGM to true is relationships non-instantaneous
+    
+    nwL <- networkLite(dat[["el"]][[i]], dat[["attr"]])
+    
+    
+    #      if (get_control(dat, "tergmLite.track.duration") == TRUE) { #figure out how long relationships have lasted
+    #        nwL %n% "time" <- dat[["nw"]][[i]] %n% "time"
+    #        nwL %n% "lasttoggle" <- dat[["nw"]][[i]] %n% "lasttoggle"
+    #      }
+    
+    if(i==1){
+      # update pers degree (nodal attribute based on network status)
+      deg.pers <- get_attr(dat, "deg.pers")
+      deg.pers <- get_degree(dat[["el"]][[2]])
+      dat <- set_attr(dat, "deg.pers", deg.pers)
+    }
+    
+    if(i==2){
+      # update main degree (nodal attribute based on network status)
+      deg.main <- get_attr(dat, "deg.main")
+      deg.main <- get_degree(dat[["el"]][[1]])
+      dat <- set_attr(dat, "deg.main", deg.main)
+    }
+    
+    if (isTERGM == TRUE) { #The following happens only if tergm (relationships last)
+      dat[["nw"]][[i]] <- simulate( #forms, dissolves contacts. generic function. simulate distribution corresponding to fitted model object
+        nwL, #what are the attributes of each node
+        formation = nwparam[["formation"]],
+        dissolution = nwparam[["coef.diss"]][["dissolution"]],
+        coef.form = nwparam[["coef.form"]],
+        coef.diss = nwparam[["coef.diss"]][["coef.adj"]],
+        constraints = nwparam[["constraints"]],
+        time.start = at - 1,
+        time.slices = 1,
+        time.offset = 1,
+        control = set.control.stergm,
+        output = "final"
+      )
+    } else {  #The following happens if tergm is false, e.g. instantaneous relationships
+      dat[["nw"]][[i]] <- simulate( #forms contacts
+        basis = nwL,
+        object = nwparam[["formation"]],
+        coef = nwparam[["coef.form"]],
+        constraints = nwparam[["constraints"]],
+        control = set.control.ergm,
+        dynamic = FALSE,
+        nsim = 1,
+        output = "network"
+      )
+    }
+    
+    dat[["el"]][[i]] <- as.edgelist(dat[["nw"]][[i]])
+    
     
     if (get_control(dat, "save.nwstats") == TRUE) {
       term.options <- if (isTERGM == TRUE) {
@@ -595,11 +593,11 @@ simnet_msm <- function(dat, at) {
     
   }
   
-#  if (get_control(dat, "cumulative.edgelist") == TRUE) {
-#    for (n_network in seq_len(3)) {
-#      dat <- update_cumulative_edgelist(dat, n_network, truncate.el.cuml)
-#    }
-#  }
+  #  if (get_control(dat, "cumulative.edgelist") == TRUE) {
+  #    for (n_network in seq_len(3)) {
+  #      dat <- update_cumulative_edgelist(dat, n_network, truncate.el.cuml)
+  #    }
+  #  }
   
   return(dat)
 }
@@ -614,7 +612,7 @@ simnet_msm <- function(dat, at) {
 ##Infection
 infect_msm <- function(dat, at) {
   
-
+  
   # model-specific discordant edgelist function
   discord_edgelist_mpx <- function (dat, at, network){ 
     status <- get_attr(dat, "status")
@@ -897,9 +895,9 @@ infect_msm <- function(dat, at) {
   
   ####superspreader event
   dat <- set_epi(dat, "superspreader.event", at, 0)
-
-  if(at > 5){
   
+  if(at > 5){
+    
     surge.time <- get_param(dat, "surge.time")
     surge.trans <- get_param(dat, "surge.trans")
     import <- get_param(dat, "import")
@@ -908,26 +906,26 @@ infect_msm <- function(dat, at) {
     N_hr <- get_epi(dat,"N_hr", at-1)
     
     
-  if(at < surge.time){ #median 17 days from 5 "a" individuals to 5 cases, another 5 between five cases and pride.
-    super.spreader <- sus_hr * (inf_hr/N_hr) * surge.trans + floor(import) + rbinom(1,1,(import-floor(import)))
-    status <- get_attr(dat, "status")
-    riskg <- get_attr(dat, "riskg")
-  # initial infecteds
-  risk.high <- which(status == "s" & (riskg == "4" | riskg == "5" | riskg == "6"))
-  
-  if (length(risk.high) < super.spreader) {super.spreader <- length(risk.high)}
-  if (length(risk.high) >= super.spreader) {
-    infected <- sample(risk.high, super.spreader, replace=FALSE)
-  }  #else {infected <- sample(which(status=="s"), super.spreader, replace=FALSE)}
-  
-  status[infected] <- "e"
-  
-  old.infs <- get_epi(dat,"cuml.infs", at)
-  dat <- set_epi(dat, "cuml.infs", at, old.infs + super.spreader)
-  
-  dat <- set_attr(dat, "status", status)
-  dat <- set_epi(dat, "superspreader.event", at, 1)
-  }}
+    if(at < surge.time){ #median 17 days from 5 "a" individuals to 5 cases, another 5 between five cases and pride.
+      super.spreader <- sus_hr * (inf_hr/N_hr) * surge.trans + floor(import) + rbinom(1,1,(import-floor(import)))
+      status <- get_attr(dat, "status")
+      riskg <- get_attr(dat, "riskg")
+      # initial infecteds
+      risk.high <- which(status == "s" & (riskg == "4" | riskg == "5" | riskg == "6"))
+      
+      if (length(risk.high) < super.spreader) {super.spreader <- length(risk.high)}
+      if (length(risk.high) >= super.spreader) {
+        infected <- sample(risk.high, super.spreader, replace=FALSE)
+      }  #else {infected <- sample(which(status=="s"), super.spreader, replace=FALSE)}
+      
+      status[infected] <- "e"
+      
+      old.infs <- get_epi(dat,"cuml.infs", at)
+      dat <- set_epi(dat, "cuml.infs", at, old.infs + super.spreader)
+      
+      dat <- set_attr(dat, "status", status)
+      dat <- set_epi(dat, "superspreader.event", at, 1)
+    }}
   
   return(dat)
 }
@@ -957,78 +955,78 @@ progress_msm <- function(dat, at) {
   testing.rate <-  get_param(dat, "testing.rate")
   if(at < 58){testing.rate <- 1/(1/testing.rate + (52 - at)*(10/52))}
   testing.prob <-  get_param(dat, "testing.prob")
-    
-    
-    # natural recovery among infected 
-    
-    ## Natural Recovery among i & im 
-    nRec       <- 0
-    idsEligRec <- which(active == 1 & (status == "i" | status == "im"))
-    nEligRec   <- length(idsEligRec)
-    
-    if (nEligRec > 0) {
-      vecRec <- which(rbinom(nEligRec, 1, i.to.r.rate) == 1) # vector of who recovers without testing
-      if (length(vecRec) > 0) {
-        idsRec <- idsEligRec[vecRec]
-        nRec   <- length(idsRec)
-        status[idsRec] <- "r"
-        recTime[idsRec] <- at
-        riskg[idsRec] <- pre.riskg[idsRec]
-        
-      }
+  
+  
+  # natural recovery among infected 
+  
+  ## Natural Recovery among i & im 
+  nRec       <- 0
+  idsEligRec <- which(active == 1 & (status == "i" | status == "im"))
+  nEligRec   <- length(idsEligRec)
+  
+  if (nEligRec > 0) {
+    vecRec <- which(rbinom(nEligRec, 1, i.to.r.rate) == 1) # vector of who recovers without testing
+    if (length(vecRec) > 0) {
+      idsRec <- idsEligRec[vecRec]
+      nRec   <- length(idsRec)
+      status[idsRec] <- "r"
+      recTime[idsRec] <- at
+      riskg[idsRec] <- pre.riskg[idsRec]
+      
     }
-    
-    ## testing
-    nTest      <- 0
-    #idsEligTest <- which(active == 1 & status == "i") ## NEEDS TO ALSO FILTER BY TREATMENT TIME = NA
-    #half the ascertainment rate before July first (aka at = 47)
-    if(at < 47){
-      idsEligTest <- which(active == 1 & status == "i" & is.na(testTime) & runif(length(active)) > 0.5)}
-    if(at >= 47){
-      idsEligTest <- which(active == 1 & status == "i" & is.na(testTime))}
-    nEligTest   <- length(idsEligTest)
-    
-    
-    if (nEligTest > 0) {
-      vecTest <- which(rbinom(nEligTest, 1, testing.rate) == 1) # vector of who is tested
-      if (length(vecTest) > 0) {
-        idsTest <- idsEligTest[vecTest]
-        nTest   <- length(idsTest)
-        testTime[idsTest] <- at
-        riskg[idsTest] <- 1
-      }
+  }
+  
+  ## testing
+  nTest      <- 0
+  #idsEligTest <- which(active == 1 & status == "i") ## NEEDS TO ALSO FILTER BY TREATMENT TIME = NA
+  #half the ascertainment rate before July first (aka at = 47)
+  if(at < 47){
+    idsEligTest <- which(active == 1 & status == "i" & is.na(testTime) & runif(length(active)) > 0.5)}
+  if(at >= 47){
+    idsEligTest <- which(active == 1 & status == "i" & is.na(testTime))}
+  nEligTest   <- length(idsEligTest)
+  
+  
+  if (nEligTest > 0) {
+    vecTest <- which(rbinom(nEligTest, 1, testing.rate) == 1) # vector of who is tested
+    if (length(vecTest) > 0) {
+      idsTest <- idsEligTest[vecTest]
+      nTest   <- length(idsTest)
+      testTime[idsTest] <- at
+      riskg[idsTest] <- 1
     }
-    
-    ## Asympt. to Infectious but will not seek testing
-    nInf_m       <- 0
-    idsEligInf <- which(active == 1 & status == "a" & tx.seek == 0)
-    nEligInf   <- length(idsEligInf)
-    
-    if (nEligInf > 0) {
-      vecInf <- which(rbinom(nEligInf, 1, a.to.i.rate) == 1) 
-      if (length(vecInf) > 0) {
-        idsInf <- idsEligInf[vecInf]
-        nInf_m  <- length(idsInf)
-        status[idsInf] <- "im"
-        riskg[idsInf] <- pmax(1,riskg[idsInf] - 1)
-      }
+  }
+  
+  ## Asympt. to Infectious but will not seek testing
+  nInf_m       <- 0
+  idsEligInf <- which(active == 1 & status == "a" & tx.seek == 0)
+  nEligInf   <- length(idsEligInf)
+  
+  if (nEligInf > 0) {
+    vecInf <- which(rbinom(nEligInf, 1, a.to.i.rate) == 1) 
+    if (length(vecInf) > 0) {
+      idsInf <- idsEligInf[vecInf]
+      nInf_m  <- length(idsInf)
+      status[idsInf] <- "im"
+      riskg[idsInf] <- pmax(1,riskg[idsInf] - 1)
     }
-    
-    ## Asympt to Infectious 
-    nInf <- 0
-    idsEligInf <- which(active == 1 & status == "a" & tx.seek == 1)
-    nEligInf <- length(idsEligInf)
-    
-    if (nEligInf > 0) {
-      vecInf <- which(rbinom(nEligInf, 1, a.to.i.rate) == 1) 
-      if (length(vecInf) > 0) {
-        idsInf <- idsEligInf[vecInf]
-        nInf <- length(idsInf)
-        status[idsInf] <- "i"
-        riskg[idsInf] <- pmax(1,riskg[idsInf] - 1)
-      }
+  }
+  
+  ## Asympt to Infectious 
+  nInf <- 0
+  idsEligInf <- which(active == 1 & status == "a" & tx.seek == 1)
+  nEligInf <- length(idsEligInf)
+  
+  if (nEligInf > 0) {
+    vecInf <- which(rbinom(nEligInf, 1, a.to.i.rate) == 1) 
+    if (length(vecInf) > 0) {
+      idsInf <- idsEligInf[vecInf]
+      nInf <- length(idsInf)
+      status[idsInf] <- "i"
+      riskg[idsInf] <- pmax(1,riskg[idsInf] - 1)
     }
-    
+  }
+  
   
   
   ## Latent to Asymptomatically Infectious 
@@ -1139,13 +1137,13 @@ prevalence_msm <- function(dat, at) {
                    sum(active == 1 & status=="i") + 
                    sum(active == 1 & status=="im"))
   dat <- set_epi(dat, "inf_hr",  at, sum(active == 1 & 
-                                                (status=="a" | status=="i" | status=="im") & 
-                                                (riskg == 6 | riskg == 5 | riskg == 4)))
-  dat <- set_epi(dat, "sus_hr",  at, sum(active == 1 & 
-                                                (status=="s") & 
-                                                (riskg == 6 | riskg == 5 | riskg == 4)))
-  dat <- set_epi(dat, "N_hr",  at, sum(active == 1 & 
+                                           (status=="a" | status=="i" | status=="im") & 
                                            (riskg == 6 | riskg == 5 | riskg == 4)))
+  dat <- set_epi(dat, "sus_hr",  at, sum(active == 1 & 
+                                           (status=="s") & 
+                                           (riskg == 6 | riskg == 5 | riskg == 4)))
+  dat <- set_epi(dat, "N_hr",  at, sum(active == 1 & 
+                                         (riskg == 6 | riskg == 5 | riskg == 4)))
   
   # growth rate & doubling time based on actual infections 
   
@@ -1160,7 +1158,7 @@ prevalence_msm <- function(dat, at) {
   
   # growth rate & doubling time based on Tested cases 
   # nRec is the number of cases that recover per day
-
+  
   nt2 <- get_epi(dat, "cuml.cases", at)
   n02 <- 1
   
@@ -1233,82 +1231,82 @@ vaccinate_msm <- function(dat, at) {
   strategy <- get_param(dat, "strategy")
   
   if(strategy == 1 & vaccination == TRUE){
-  vaccinate.coverage.1.1 = 478*vaccine.multiply*vaccination.proportion.msm 
-  vaccinate.coverage.1.2 = 1573*vaccine.multiply*vaccination.proportion.msm 
-  vaccinate.coverage.1.3 = 2729*vaccine.multiply*vaccination.proportion.msm 
-  vaccinate.coverage.1.4 = 7298*vaccine.multiply*vaccination.proportion.msm 
-  vaccinate.coverage.1.5 = 11342*vaccine.multiply*vaccination.proportion.msm
-  vaccinate.coverage.1.6 = 15542*vaccine.multiply*vaccination.proportion.msm 
-  vaccinate.coverage.1.7 = 20139*vaccine.multiply*vaccination.proportion.msm 
-  vaccinate.coverage.1.8 = 12273*vaccine.multiply*vaccination.proportion.msm 
-  vaccinate.coverage.1.9 = 6398*vaccine.multiply*vaccination.proportion.msm 
-  vaccinate.coverage.1.10 = 6118*vaccine.multiply*vaccination.proportion.msm 
-  vaccinate.coverage.1.11 = 3056*vaccine.multiply*vaccination.proportion.msm 
-  vaccinate.coverage.1.12 = 2490*vaccine.multiply*vaccination.proportion.msm 
-  vaccinate.coverage.1.13 = 1946*vaccine.multiply*vaccination.proportion.msm 
-  vaccinate.coverage.1.14 = 1748*vaccine.multiply*vaccination.proportion.msm 
-  vaccinate.coverage.1.15 = 1255*vaccine.multiply*vaccination.proportion.msm 
-  vaccinate.coverage.1.16 = 1090*vaccine.multiply*vaccination.proportion.msm 
-  vaccinate.coverage.1.17 = 845*vaccine.multiply*vaccination.proportion.msm 
-  vaccinate.coverage.1.18 = 706*vaccine.multiply*vaccination.proportion.msm 
-  vaccinate.coverage.1.19 = 444*vaccine.multiply*vaccination.proportion.msm 
-  vaccinate.coverage.1.20 = 393*vaccine.multiply*vaccination.proportion.msm 
-  vaccinate.coverage.1.21 = 359*vaccine.multiply*vaccination.proportion.msm 
-  vaccinate.coverage.1.22 = 159*vaccine.multiply*vaccination.proportion.msm 
-  vaccinate.coverage.1.23 = 222*vaccine.multiply*vaccination.proportion.msm 
-  vaccinate.coverage.1.24 = 148*vaccine.multiply*vaccination.proportion.msm 
-  vaccinate.coverage.1.25 = 150*vaccine.multiply*vaccination.proportion.msm 
-  vaccinate.coverage.1.26 = 158*vaccine.multiply*vaccination.proportion.msm 
-  vaccinate.coverage.1.27 = 115*vaccine.multiply*vaccination.proportion.msm 
-  vaccinate.coverage.1.28 = 118*vaccine.multiply*vaccination.proportion.msm 
-  vaccinate.coverage.1.29 = 111*vaccine.multiply*vaccination.proportion.msm 
-  vaccinate.coverage.1.30 = 98*vaccine.multiply*vaccination.proportion.msm 
-  vaccinate.coverage.1.31 = 95*vaccine.multiply*vaccination.proportion.msm 
-  vaccinate.coverage.1.32 = 101*vaccine.multiply*vaccination.proportion.msm 
-  vaccinate.coverage.1.33 = 87*vaccine.multiply*vaccination.proportion.msm 
-  vaccinate.coverage.1.34 = 74*vaccine.multiply*vaccination.proportion.msm 
-  vaccinate.coverage.1.35 = 48*vaccine.multiply*vaccination.proportion.msm 
-  vaccinate.coverage.1.36 = 53*vaccine.multiply*vaccination.proportion.msm 
-  vaccinate.coverage.1.37 = 66*vaccine.multiply*vaccination.proportion.msm 
-  vaccinate.coverage.1.38 = 66*vaccine.multiply*vaccination.proportion.msm 
-  vaccinate.coverage.2.1 = 6*vaccine.multiply*vaccination.proportion.msm 
-  vaccinate.coverage.2.2 = 9*vaccine.multiply*vaccination.proportion.msm 
-  vaccinate.coverage.2.3 = 24*vaccine.multiply*vaccination.proportion.msm 
-  vaccinate.coverage.2.4 = 43*vaccine.multiply*vaccination.proportion.msm 
-  vaccinate.coverage.2.5 = 65*vaccine.multiply*vaccination.proportion.msm #sum of first five weeks to account for 28 day gap
-  vaccinate.coverage.2.6 = 96*vaccine.multiply*vaccination.proportion.msm 
-  vaccinate.coverage.2.7 = 216*vaccine.multiply*vaccination.proportion.msm 
-  vaccinate.coverage.2.8 = 287*vaccine.multiply*vaccination.proportion.msm 
-  vaccinate.coverage.2.9 = 213*vaccine.multiply*vaccination.proportion.msm 
-  vaccinate.coverage.2.10 = 263*vaccine.multiply*vaccination.proportion.msm 
-  vaccinate.coverage.2.11 = 2340*vaccine.multiply*vaccination.proportion.msm 
-  vaccinate.coverage.2.12 = 7193*vaccine.multiply*vaccination.proportion.msm 
-  vaccinate.coverage.2.13 = 14588*vaccine.multiply*vaccination.proportion.msm 
-  vaccinate.coverage.2.14 = 9510*vaccine.multiply*vaccination.proportion.msm 
-  vaccinate.coverage.2.15 = 5390*vaccine.multiply*vaccination.proportion.msm 
-  vaccinate.coverage.2.16 = 2264*vaccine.multiply*vaccination.proportion.msm 
-  vaccinate.coverage.2.17 = 1717*vaccine.multiply*vaccination.proportion.msm 
-  vaccinate.coverage.2.18 = 1284*vaccine.multiply*vaccination.proportion.msm 
-  vaccinate.coverage.2.19 = 853*vaccine.multiply*vaccination.proportion.msm 
-  vaccinate.coverage.2.20 = 1040*vaccine.multiply*vaccination.proportion.msm 
-  vaccinate.coverage.2.21 = 705*vaccine.multiply*vaccination.proportion.msm 
-  vaccinate.coverage.2.22 = 227*vaccine.multiply*vaccination.proportion.msm 
-  vaccinate.coverage.2.23 = 342*vaccine.multiply*vaccination.proportion.msm 
-  vaccinate.coverage.2.24 = 269*vaccine.multiply*vaccination.proportion.msm 
-  vaccinate.coverage.2.25 = 276*vaccine.multiply*vaccination.proportion.msm 
-  vaccinate.coverage.2.26 = 214*vaccine.multiply*vaccination.proportion.msm 
-  vaccinate.coverage.2.27 = 134*vaccine.multiply*vaccination.proportion.msm 
-  vaccinate.coverage.2.28 = 187*vaccine.multiply*vaccination.proportion.msm 
-  vaccinate.coverage.2.29 = 182*vaccine.multiply*vaccination.proportion.msm 
-  vaccinate.coverage.2.30 = 146*vaccine.multiply*vaccination.proportion.msm 
-  vaccinate.coverage.2.31 = 89*vaccine.multiply*vaccination.proportion.msm 
-  vaccinate.coverage.2.32 = 117*vaccine.multiply*vaccination.proportion.msm 
-  vaccinate.coverage.2.33 = 100*vaccine.multiply*vaccination.proportion.msm 
-  vaccinate.coverage.2.34 = 88*vaccine.multiply*vaccination.proportion.msm 
-  vaccinate.coverage.2.35 = 78*vaccine.multiply*vaccination.proportion.msm 
-  vaccinate.coverage.2.36 = 101*vaccine.multiply*vaccination.proportion.msm 
-  vaccinate.coverage.2.37 = 86*vaccine.multiply*vaccination.proportion.msm 
-  vaccinate.coverage.2.38 = 70*vaccine.multiply*vaccination.proportion.msm
+    vaccinate.coverage.1.1 = 478*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.1.2 = 1573*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.1.3 = 2729*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.1.4 = 7298*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.1.5 = 11342*vaccine.multiply*vaccination.proportion.msm
+    vaccinate.coverage.1.6 = 15542*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.1.7 = 20139*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.1.8 = 12273*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.1.9 = 6398*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.1.10 = 6118*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.1.11 = 3056*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.1.12 = 2490*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.1.13 = 1946*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.1.14 = 1748*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.1.15 = 1255*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.1.16 = 1090*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.1.17 = 845*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.1.18 = 706*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.1.19 = 444*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.1.20 = 393*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.1.21 = 359*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.1.22 = 159*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.1.23 = 222*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.1.24 = 148*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.1.25 = 150*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.1.26 = 158*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.1.27 = 115*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.1.28 = 118*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.1.29 = 111*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.1.30 = 98*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.1.31 = 95*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.1.32 = 101*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.1.33 = 87*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.1.34 = 74*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.1.35 = 48*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.1.36 = 53*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.1.37 = 66*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.1.38 = 66*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.2.1 = 6*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.2.2 = 9*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.2.3 = 24*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.2.4 = 43*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.2.5 = 65*vaccine.multiply*vaccination.proportion.msm #sum of first five weeks to account for 28 day gap
+    vaccinate.coverage.2.6 = 96*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.2.7 = 216*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.2.8 = 287*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.2.9 = 213*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.2.10 = 263*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.2.11 = 2340*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.2.12 = 7193*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.2.13 = 14588*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.2.14 = 9510*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.2.15 = 5390*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.2.16 = 2264*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.2.17 = 1717*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.2.18 = 1284*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.2.19 = 853*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.2.20 = 1040*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.2.21 = 705*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.2.22 = 227*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.2.23 = 342*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.2.24 = 269*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.2.25 = 276*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.2.26 = 214*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.2.27 = 134*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.2.28 = 187*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.2.29 = 182*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.2.30 = 146*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.2.31 = 89*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.2.32 = 117*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.2.33 = 100*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.2.34 = 88*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.2.35 = 78*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.2.36 = 101*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.2.37 = 86*vaccine.multiply*vaccination.proportion.msm 
+    vaccinate.coverage.2.38 = 70*vaccine.multiply*vaccination.proportion.msm
   }
   
   if(strategy == 2 & vaccination == TRUE){
@@ -1468,11 +1466,11 @@ vaccinate_msm <- function(dat, at) {
     vaccinate.coverage.2.36 = 92*vaccine.multiply*vaccination.proportion.msm 
     vaccinate.coverage.2.37 = 109*vaccine.multiply*vaccination.proportion.msm 
     vaccinate.coverage.2.38 = 94*vaccine.multiply*vaccination.proportion.msm 
-
-  }
     
+  }
   
-
+  
+  
   vaccinate.timeline.1    <- get_param(dat, "vaccinate.timeline.1")
   vaccinate.timeline.2    <- get_param(dat, "vaccinate.timeline.2")
   vaccinate.timeline.3    <- get_param(dat, "vaccinate.timeline.3")
@@ -1718,25 +1716,25 @@ vaccinate_msm <- function(dat, at) {
   }
   
   vaccinate.interval <- get_param(dat, "vaccinate.interval")
-
+  
   
   ## vaccination first dose
   vacc.first.dose.now <- round(coverage.1/duration)
   nVacc.1 <- 0
   if(at < vaccinate.timeline.5){idsEligVacc <- which(active == 1 & 
-      tx.seek == 1 & (riskg == 4 | riskg == 5 | riskg == 6) & (status == "s" | 
-      status == "e" | status == "a") & is.na(vaccTime1))}
+                                                       tx.seek == 1 & (riskg == 4 | riskg == 5 | riskg == 6) & (status == "s" | 
+                                                                                                                  status == "e" | status == "a") & is.na(vaccTime1))}
   if(at >= vaccinate.timeline.5 & at < vaccinate.timeline.7){idsEligVacc <- which(active == 1 & 
-      tx.seek == 1 & (riskg == 3 | riskg == 4 | riskg == 5 | 
-      riskg == 6) & (status == "s" | status == "e" | status == "a") & 
-        is.na(vaccTime1))}
+                                                                                    tx.seek == 1 & (riskg == 3 | riskg == 4 | riskg == 5 | 
+                                                                                                      riskg == 6) & (status == "s" | status == "e" | status == "a") & 
+                                                                                    is.na(vaccTime1))}
   if(at >= vaccinate.timeline.7){idsEligVacc <- which(active == 1 & 
-      tx.seek == 1 & (riskg == 2 | riskg == 3 | riskg == 4 | riskg == 5 | 
-      riskg == 6) & (status == "s" | status == "e" | status == "a") & 
-        is.na(vaccTime1))}
+                                                        tx.seek == 1 & (riskg == 2 | riskg == 3 | riskg == 4 | riskg == 5 | 
+                                                                          riskg == 6) & (status == "s" | status == "e" | status == "a") & 
+                                                        is.na(vaccTime1))}
   
   nEligVacc <- length(idsEligVacc)
-
+  
   if (nEligVacc > vacc.first.dose.now) {
     vecVacc <- sample(idsEligVacc, vacc.first.dose.now, replace=FALSE) #vector of who is vaccinated
     nVacc.1 <- length(vecVacc)
@@ -1885,11 +1883,11 @@ init_tergmLite <- function (dat) {
       dat$control$mcmc.control[[i]] <- check.control.class("simulate.formula.tergm", 
                                                            "init_tergmLite", NVL(dat$control[[mcmc_control_name]], 
                                                                                  control.simulate.formula.tergm()))
-  #    if (dat$control$tergmLite.track.duration == TRUE) {
-  #      nw %n% "time" <- 1
-  #      nw %n% "lasttoggle" <- cbind(as.edgelist(nw), 
-  #                                   1)
-  #    }
+      #    if (dat$control$tergmLite.track.duration == TRUE) {
+      #      nw %n% "time" <- 1
+      #      nw %n% "lasttoggle" <- cbind(as.edgelist(nw), 
+      #                                   1)
+      #    }
     }
     else {
       mcmc_control_name <- paste(c("mcmc.control.ergm", 
