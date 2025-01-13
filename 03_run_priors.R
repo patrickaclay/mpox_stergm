@@ -115,7 +115,7 @@ for(loops.i in 0:(loops-1)){
     surge.trans.param <- params.set$eventtrans[i]
     import.param <- params.set$import[i]
     behavior.change.amount.param = params.set$behaveadapt[i]
-    source(here("nc_modules.R"))
+    source(here("00_mpox_stergm_modules.R"))
     
     
     # load in all other parameters
