@@ -37,6 +37,7 @@ latent.period <- 4 #length of pre-symptomatic infectious period, based on Brosiu
 vaccination.proportion.param = 0.82 #proportion of vaccinations that were administered to MSM
 vaccination.switch <- TRUE #set as false if want to remove vaccination
 behavior.change.switch <- TRUE #set as false if want to remove behavioral adaptation
+vacc.strategy <- 1 #0 = no vacc, 1 = 1dpri, 2 = int, 3 = 2dpri
 
 #load in priors
 params.set <- read.csv("params_set.csv")
