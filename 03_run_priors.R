@@ -25,12 +25,13 @@ load(here("fits", "fit_167k_highestrisk_hiv_edp.rda"))
 #input parameters
 tx.seek.prob <- 0.8 #probability of seeking treatment
 infectious.period <- 27 #days until natural recovery
-vaccine.effectiveness.1 <- 0.75 #based on unpublished CDC model
-vaccine.effectiveness.2 <- 0.89 #based on unpublished CDC model
+vaccine.effectiveness.1 <- 0.68 #based on unpublished CDC model
+vaccine.effectiveness.2 <- 0.83 #based on unpublished CDC model
 vaccinate.time.til.effectiveness <- 14 #days after vaccine given til becomes effective
 vaccine.multiplier <- 1 #if you want to multiply vaccines given by a set relative amount
 vaccine.timing.adjust <- 0 #if you want to delay (positive number) or speed up (negative number) vaccines administered by set number of days
 vaccine.delay <- 43 #time from start of simulation until time of first vaccines recorded (we do not include post-exposure doses given at beginning of outbreak)
+behave.delay  <- 8 #time from start of simulation until may 22 (behavioral adaptation begins)
 init.infs <- 5 #number of initial infections
 latent.period <- 4 #length of pre-symptomatic infectious period, based on Brosius et al 2023, J Med Virol
 vaccination.proportion.param = 0.82 #proportion of vaccinations that were administered to MSM
