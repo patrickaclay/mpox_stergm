@@ -50,8 +50,7 @@ surge.time.param <- posteriors$eventtime[1]
 surge.trans.param <- posteriors$eventtrans[1]
 import.param <- posteriors$import[1]
 behavior.change.amount.param = posteriors$behaveadapt[1]
-#source(here("02_modules_gradual_vacc.R"))
-source(here("NYC_modules.R"))
+source(here("00_mpox_stergm_modules.R"))
 # load in all other parameters
 params <- param_msm()
 # sequence of modules to run model
