@@ -65,5 +65,5 @@ for(i in 1:runs.per.loop){
   incsheet$day <- seq(1,365)
   
 
-write.csv(cumsheet, "posterior_runs_real/cum_cases.csv")
-write.csv(incsheet, "posterior_runs_real/inc_cases.csv")
+write.csv(cumsheet, "posterior_runs_real/cum_cases_best_1dpri.csv")
+write.csv(incsheet, "posterior_runs_real/inc_cases_best_1dpri.csv")
