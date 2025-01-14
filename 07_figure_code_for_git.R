@@ -6,12 +6,12 @@ library(dplyr)
 
 ############
 ####Difference in cases averted- primary 
-first_pri_cum <- read.csv("data_sheets/cum_cases_best_1dpri.csv")
-inter_cum <- read.csv("data_sheets/cum_cases_best_int.csv")
-second_pri_cum <- read.csv("data_sheets/cum_cases_best_2dpri.csv")
+first_pri_cum <- read.csv("posterior_runs_real/cum_cases_best_1dpri.csv")
+inter_cum <- read.csv("posterior_runs_real/cum_cases_best_int.csv")
+second_pri_cum <- read.csv("posterior_runs_real/cum_cases_best_2dpri.csv")
 
 
-nyc_data <- read.csv("data_sheets/NYC_data_through_may16.csv")
+nyc_data <- read.csv("NYC_data_through_may16.csv")
 nyc_data$Date.to.use <- as.Date(nyc_data$Date.to.use, "%Y-%m-%d")
 
 #subtract cumulative cases with first priority from cumulative
@@ -86,12 +86,12 @@ ggsave("figures/difference_in_averted_primary.png", scenarios_compare_diff, bg =
 
 ############
 ####Difference in cases averted- limited
-first_pri_cum <- read.csv("data_sheets/cum_cases_limited_1dpri.csv")
-inter_cum <- read.csv("data_sheets/cum_cases_limited_int.csv")
-second_pri_cum <- read.csv("data_sheets/cum_cases_limited_2dpri.csv")
+first_pri_cum <- read.csv("posterior_runs_real/cum_cases_limited_1dpri.csv")
+inter_cum <- read.csv("posterior_runs_real/cum_cases_limited_int.csv")
+second_pri_cum <- read.csv("posterior_runs_real/cum_cases_limited_2dpri.csv")
 
 
-nyc_data <- read.csv("data_sheets/NYC_data_through_may16.csv")
+nyc_data <- read.csv("NYC_data_through_may16.csv")
 nyc_data$Date.to.use <- as.Date(nyc_data$Date.to.use, "%Y-%m-%d")
 
 
@@ -159,12 +159,12 @@ ggsave("figures/difference_in_averted_limited.png", scenarios_compare_diff, bg =
 
 ############
 ####Difference in cases averted- low incremental effectiveness 
-first_pri_cum <- read.csv("data_sheets/cum_cases_best_1dpri_low_inc_VE.csv")
-inter_cum <- read.csv("data_sheets/cum_cases_best_int_low_inc_VE.csv")
-second_pri_cum <- read.csv("data_sheets/cum_cases_best_2dpri_low_inc_VE.csv")
+first_pri_cum <- read.csv("posterior_runs_real/cum_cases_best_1dpri_low_inc_VE.csv")
+inter_cum <- read.csv("posterior_runs_real/cum_cases_best_int_low_inc_VE.csv")
+second_pri_cum <- read.csv("posterior_runs_real/cum_cases_best_2dpri_low_inc_VE.csv")
 
 
-nyc_data <- read.csv("data_sheets/NYC_data_through_may16.csv")
+nyc_data <- read.csv("NYC_data_through_may16.csv")
 nyc_data$Date.to.use <- as.Date(nyc_data$Date.to.use, "%Y-%m-%d")
 
 
@@ -231,12 +231,12 @@ ggsave("figures/difference_in_averted_low_inc_VE.png", scenarios_compare_diff, b
 
 ############
 ####Difference in cases averted- high incremental effectiveness 
-first_pri_cum <- read.csv("data_sheets/cum_cases_best_1dpri_high_inc_VE.csv")
-inter_cum <- read.csv("data_sheets/cum_cases_best_int_high_inc_VE.csv")
-second_pri_cum <- read.csv("data_sheets/cum_cases_best_2dpri_high_inc_VE.csv")
+first_pri_cum <- read.csv("posterior_runs_real/cum_cases_best_1dpri_high_inc_VE.csv")
+inter_cum <- read.csv("posterior_runs_real/cum_cases_best_int_high_inc_VE.csv")
+second_pri_cum <- read.csv("posterior_runs_real/cum_cases_best_2dpri_high_inc_VE.csv")
 
 
-nyc_data <- read.csv("data_sheets/NYC_data_through_may16.csv")
+nyc_data <- read.csv("NYC_data_through_may16.csv")
 nyc_data$Date.to.use <- as.Date(nyc_data$Date.to.use, "%Y-%m-%d")
 
 
@@ -303,12 +303,12 @@ ggsave("figures/difference_in_averted_high_inc_VE.png", scenarios_compare_diff, 
 
 ############
 ####Difference in cases averted- clade 1 (higher transmission) 
-first_pri_cum <- read.csv("data_sheets/cum_cases_clade1_1dpri.csv")
-inter_cum <- read.csv("data_sheets/cum_cases_clade1_int.csv")
-second_pri_cum <- read.csv("data_sheets/cum_cases_clade1_2dpri.csv")
+first_pri_cum <- read.csv("posterior_runs_real/cum_cases_clade1_1dpri.csv")
+inter_cum <- read.csv("posterior_runs_real/cum_cases_clade1_int.csv")
+second_pri_cum <- read.csv("posterior_runs_real/cum_cases_clade1_2dpri.csv")
 
 
-nyc_data <- read.csv("data_sheets/NYC_data_through_may16.csv")
+nyc_data <- read.csv("NYC_data_through_may16.csv")
 nyc_data$Date.to.use <- as.Date(nyc_data$Date.to.use, "%Y-%m-%d")
 
 #subtract cumulative cases with first priority from cumulative
@@ -389,7 +389,7 @@ ggsave("figures/difference_in_averted_primary_clade1.png", scenarios_compare_dif
 ###### Figure 1
 ###### Outline of vaccine strategies
 
-doses <- read.csv("data_sheets/strategy_doses.csv")
+doses <- read.csv("strategy_doses.csv")
 doses$Week <- as.Date(doses$Week,"%m/%d/%Y")
 
 #intervention_compare$Intervention <- factor(intervention_compare$Intervention, levels = c("No Intervention"))#,"Vaccination","Behavior Change","Vacc. + Behave."))
@@ -423,7 +423,7 @@ ggsave("figures/strategy_doses.png", strategy_doses, bg = "transparent",
 ###### model fit and total cases averted
 
 
-first_pri_inc <- read.csv("data_sheets/inc_cases_best_1dpri.csv")
+first_pri_inc <- read.csv("posterior_runs_real/inc_cases_best_1dpri.csv")
 first_pri_inc_summ <- data.frame(inc.med = numeric(length = 362),
                              inc.IQR1 = numeric(length = 362),
                              inc.IQR3 = numeric(length = 362))
@@ -434,14 +434,14 @@ for(i in 2:362){
 }
 
 
-nyc_data <- read.csv("data_sheets/NYC_data_through_may16.csv")
+nyc_data <- read.csv("NYC_data_through_may16.csv")
 nyc_data$Date.to.use <- as.Date(nyc_data$Date.to.use, "%Y-%m-%d")
 
 first_pri_inc_summ$Date.to.use <- nyc_data$Date.to.use
 
 
   
-  first_pri_cum <- read.csv("data_sheets/cum_cases_best_1dpri.csv")
+  first_pri_cum <- read.csv("posterior_runs_real/cum_cases_best_1dpri.csv")
   first_pri_cum_summ <- data.frame(inc.med = numeric(length = 362),
                                inc.IQR1 = numeric(length = 362),
                                inc.IQR3 = numeric(length = 362))
@@ -451,7 +451,7 @@ first_pri_inc_summ$Date.to.use <- nyc_data$Date.to.use
     first_pri_cum_summ$inc.IQR3[i] <- summary(as.numeric(first_pri_cum[i,]))[5]
   }
   
-  novacc_cum <- read.csv("data_sheets/cum_cases_best_novacc.csv")
+  novacc_cum <- read.csv("posterior_runs_real/cum_cases_best_novacc.csv")
   novacc_cum_summ <- data.frame(inc.med = numeric(length = 362),
                             inc.IQR1 = numeric(length = 362),
                             inc.IQR3 = numeric(length = 362))
