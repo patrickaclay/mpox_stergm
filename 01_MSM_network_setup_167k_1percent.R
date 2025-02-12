@@ -1,3 +1,15 @@
+##install in libraries
+# If you don't have remotes, install it. 
+install.packages("remotes", repos='http://cran.us.r-project.org')
+
+# Install EpiModel (& dependencies) from CRAN & EpiModel HIV Stack from Github
+install.packages("EpiModel", dependencies = TRUE, repos='http://cran.us.r-project.org')
+remotes::install_github("statnet/tergmLite")
+remotes::install_github("statnet/tergm")
+
+remotes::install_github("statnet/EpiModelHPC", force = TRUE) # you need this even if you aren't using HPC 
+remotes::install_github("statnet/EpiModelHIV", force = TRUE)
+
 ##set up network
 
 library(EpiModel)
